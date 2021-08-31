@@ -9,7 +9,8 @@ function finish {
 
 trap finish EXIT
 setfacl -d -Rm u:1000:rwx "$GITHUB_WORKSPACE"
-set -eo
+
+set -xeo
 
 echo "---Start: Setting Prerequisites"
 cd "$GITHUB_WORKSPACE"
@@ -27,13 +28,29 @@ export BRANCH_NAME="$GITVERSION_BRANCHNAME"
 echo "Print Branch name: $BRANCH_NAME"
 
 export GITHUB_USER="$GITHUB_REPOSITORY_OWNER"
-
 echo "---End: Setting Prerequisites"
 
+echo "---Start: pip install"
+chown -R 1000:1000 "$GITHUB_WORKSPACE"/*
+REQUIREMENTS_TXT="./requirements.txt"
 
-echo "Start: Sonar Scan"
+if [ -f "$REQUIREMENTS_TXT" ]; then
+  python -m pip install -r $REQUIREMENTS_TXT
+else
+  python -m pip install --upgrade pipenv wheel
+  pipenv install --dev
+fi
+
+echo "---End: pip install"
+
+echo "---Start: pytest test"
+coverage run -m pytest test
+echo "---End: pytest test"
+
+echo "---Start: Sonar Scan"
 sh -c "/scripts/coverage_scan.sh"
-echo "End: Sonar Scan"
+echo "---End: Sonar Scan"
+
 
 echo "Container Push: $INPUT_CONTAINER_PUSH_ENABLED"
 if [ "$INPUT_CONTAINER_PUSH_ENABLED" = 'true' ]; then
@@ -45,6 +62,6 @@ if [ "$INPUT_CONTAINER_PUSH_ENABLED" = 'true' ]; then
   echo "End: Publish Image to ECR"
 fi
 
-echo "Start: Clean up"
+echo "---Start: Clean up"
 sudo git clean -fdx
-echo "End: Clean up"
+echo "---End: Clean up"
