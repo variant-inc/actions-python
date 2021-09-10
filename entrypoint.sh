@@ -30,12 +30,13 @@ echo "Print Branch name: $BRANCH_NAME"
 export GITHUB_USER="$GITHUB_REPOSITORY_OWNER"
 echo "---End: Setting Prerequisites"
 
-echo "---Start: pip install"
 chown -R 1000:1000 "$GITHUB_WORKSPACE"/*
-REQUIREMENTS_TXT="./requirements.txt"
+
+echo "---Start: pip install"
+REQUIREMENTS_TXT="requirements.txt"
 
 if [ -f "$REQUIREMENTS_TXT" ]; then
-  python -m pip install -r "$REQUIREMENTS_TXT"
+  python -m pip install --requirement "$REQUIREMENTS_TXT"
 else
   python -m pip install --upgrade pipenv wheel
   pipenv install --dev
