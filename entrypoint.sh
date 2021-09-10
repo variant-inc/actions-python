@@ -35,7 +35,7 @@ chown -R 1000:1000 "$GITHUB_WORKSPACE"/*
 REQUIREMENTS_TXT="./requirements.txt"
 
 if [ -f "$REQUIREMENTS_TXT" ]; then
-  python -m pip install -r $REQUIREMENTS_TXT
+  python -m pip install -r "$REQUIREMENTS_TXT"
 else
   python -m pip install --upgrade pipenv wheel
   pipenv install --dev
