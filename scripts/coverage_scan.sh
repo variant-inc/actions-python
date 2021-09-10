@@ -11,7 +11,6 @@ export OUTPUTDIR="coverage"
 mkdir -p "$OUTPUTDIR"
 
 sonar_args="-Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=$SONAR_TOKEN \
             -Dsonar.scm.disabled=true \
             -Dsonar.javascript.lcov.reportPaths=$OUTPUTDIR/lcov.info \
             -Dsonar.scm.revision=$GITHUB_SHA"
