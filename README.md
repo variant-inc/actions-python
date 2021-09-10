@@ -62,6 +62,17 @@ Refer [actions-setup](https://github.com/variant-inc/actions-setup) for document
         ecr_repository: naveen-demo-app/demo-repo
 ```
 
+2. (Optionally) Add Script to run before running workflow.
+
+    In `.github/actions`, add a file named `pre_test.sh` that will run any commands required for testing your codebase using this action. You will need to you a package manager supported by Debian Linux
+
+    Example:
+    ```bash
+    apt-get install --no-cache \
+      git \
+      curl
+    ```
+
 ### 4. Add octopus action
 
 1. Adding octopus action will add ability to set up continuous delivery to octopus. This action can be invoked by action name and release version.
@@ -134,3 +145,26 @@ jobs:
 | `dockerfile_dir_path`         | `.`             | Directory path to the dockerfile                                                                                             | true     |
 | `ecr_repository`              |                 | ECR Repository name                                                                                                          | true     |
 | `container_push_enabled`      | "true"          | Enable build and push container image                                                                                        | true     |
+
+
+### Pre Test Script (optional)
+
+When using actions-python create a file in .github/actions/pre_test.sh.
+
+Include any dependant packages your app requires when testing. These packages will need to be installed using a Debian package manager.
+
+#### Example (actions-python)
+```bash
+#!/bin/bash
+
+sudo apt-get update --no-install-recommends -y
+
+echo "____INSTALLING_SVN_____"
+sudo apt-get install --no-install-recommends -y \
+subversion
+
+echo "____INSTALLING_PWSH_____"
+wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+sudo apt-get install -y powershell
+```

@@ -13,5 +13,5 @@ inputs:
     default: "true"
 runs:
   using: "docker"
-  image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:latest
+  image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:test-latest
 

@@ -89,5 +89,6 @@ SHELL ["/bin/bash", "-e", "-o", "pipefail", "-c"]
 RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/install.sh | sh -s -- -b /usr/local/bin
 
 COPY . /
+
 RUN chmod +x -R /scripts/* /*.sh
 ENTRYPOINT ["/entrypoint.sh"]
