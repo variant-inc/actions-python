@@ -13,7 +13,7 @@ mkdir -p "$OUTPUTDIR"
 sonar_args="-Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=$SONAR_TOKEN \
             -Dsonar.scm.disabled=true \
-            -Dsonar.javascript.lcov.reportPaths=$OUTPUTDIR/lcov.info \
+            -Dsonar.python.coverage.reportPaths=$OUTPUTDIR/coverage.xml \
             -Dsonar.scm.revision=$GITHUB_SHA"
 
 if [ "$PULL_REQUEST_KEY" = null ]; then

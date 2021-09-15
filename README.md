@@ -157,14 +157,12 @@ Include any dependant packages your app requires when testing. These packages wi
 ```bash
 #!/bin/bash
 
-sudo apt-get update --no-install-recommends -y
-
 echo "____INSTALLING_SVN_____"
-sudo apt-get install --no-install-recommends -y \
+apt-get install --no-install-recommends -y \
 subversion
 
 echo "____INSTALLING_PWSH_____"
 wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb
-sudo dpkg -i packages-microsoft-prod.deb
-sudo apt-get install -y powershell
+dpkg -i packages-microsoft-prod.deb
+apt-get install -y powershell
 ```
