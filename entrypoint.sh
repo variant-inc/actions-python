@@ -36,22 +36,6 @@ echo "---End: Setting Prerequisites"
 
 chown -R 1000:1000 "$GITHUB_WORKSPACE"/*
 
-echo "---Start: pip install"
-REQUIREMENTS_TXT="requirements.txt"
-
-if [ -f "$REQUIREMENTS_TXT" ]; then
-  python -m pip install --requirement "$REQUIREMENTS_TXT"
-else
-  python -m pip install --upgrade pipenv wheel
-  pipenv install --dev
-fi
-
-echo "---End: pip install"
-
-echo "---Start: pytest test"
-coverage run -m pytest test
-echo "---End: pytest test"
-
 echo "---Start: Sonar Scan"
 sh -c "/scripts/coverage_scan.sh"
 echo "---End: Sonar Scan"
