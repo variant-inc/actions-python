@@ -44,7 +44,8 @@ RUN apt-get update &&\
   iptables \
   libdevmapper1.02.1 &&\
   rm -rf matching cache rm /var/lib/apt/lists/* &&\
-  python -m pip --no-cache-dir install coverage
+  python -m pip --no-cache-dir install coverage \
+  svn --version
 
 # dockerfile_lint - ignore
 RUN rm -rf /var/lib/apt/lists/* &&\

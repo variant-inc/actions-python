@@ -36,6 +36,9 @@ echo "---End: Setting Prerequisites"
 
 chown -R 1000:1000 "$GITHUB_WORKSPACE"/*
 
+echo "check svn version"
+sh -c " svn --version"
+
 echo "---Start: Sonar Scan"
 sh -c "/scripts/coverage_scan.sh"
 echo "---End: Sonar Scan"
