@@ -33,6 +33,7 @@ RUN apt-get update &&\
   bash \
   sudo \
   curl \
+  subversion \
   tzdata \
   ca-certificates \
   openjdk-11-jdk \
