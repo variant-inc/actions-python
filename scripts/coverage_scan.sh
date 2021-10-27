@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -euo
 
 echo "---Start: pytest test"
 REQUIREMENTS_TXT="requirements.txt"
