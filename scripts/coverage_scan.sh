@@ -1,6 +1,5 @@
 #!/bin/bash
-
-set -euo
+set -euo pipefail
 
 echo "---Start: pytest test"
 REQUIREMENTS_TXT="requirements.txt"
@@ -16,8 +15,8 @@ else
 fi
 
 python -m pip install pytest wheel coverage &&\
-	coverage run -m pytest test &&\
-	coverage xml -i -o coverage.xml
+	coverage run -m pytest test
+coverage xml -i -o coverage.xml
 echo "---End: pytest test"
 
 pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
