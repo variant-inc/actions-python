@@ -8,6 +8,7 @@ if [ -f "$REQUIREMENTS_TXT" ]; then
   # shellcheck disable=SC1091
   python -m venv env &&\
 	  source env/bin/activate &&\
+    python -m pip install --upgrade wheel &&\
     python -m pip install --requirement "$REQUIREMENTS_TXT"
 else
   python -m pip install --upgrade pipenv wheel
