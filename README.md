@@ -4,12 +4,14 @@ Action for CI workflow for python applications
 - [Actions Python](#actions-python)
   - [Prerequisites](#prerequisites)
     - [1. Setup github action workflow](#1-setup-github-action-workflow)
-    - [2. Add Actions Setup](#2-add-actions-setup)
+    - [2. Add actions-setup](#2-add-actions-setup)
     - [3. Add actions-python](#3-add-actions-python)
-    - [4. Add actions-octopus](#4-add-octopus-action)
+    - [4. Add octopus action](#4-add-octopus-action)
   - [Using Python Action](#using-python-action)
-    - [Adding python action to workflow](#adding-actions-python-to-workflow)
+    - [Adding actions-python to workflow](#adding-actions-python-to-workflow)
     - [Input Parameters](#input-parameters)
+    - [Pre Test Script (optional)](#pre-test-script-optional)
+      - [Example (actions-python)](#example-actions-python)
 
   - [Using Python Action](#using-python-action)
     - [Adding actions-python to workflow](#adding-actions-python-to-workflow)
@@ -56,7 +58,6 @@ Refer [actions-setup](https://github.com/variant-inc/actions-setup) for document
       uses: variant-inc/actions-python@v1
       env:
         AWS_DEFAULT_REGION: us-east-1
-        GITHUB_USER: variant-inc
       with:
         dockerfile_dir_path: '.'
         ecr_repository: naveen-demo-app/demo-repo
@@ -121,7 +122,6 @@ jobs:
       uses: variant-inc/actions-python@v1
       env:
         AWS_DEFAULT_REGION: us-east-1
-        GITHUB_USER: variant-inc
         AWS_REGION: us-east-1
       with:
         dockerfile_dir_path: '.'

@@ -1,4 +1,4 @@
-FROM python:slim-buster
+FROM python:slim
 
 ARG BUILD_DATE
 ARG BUILD_REVISION
@@ -19,9 +19,6 @@ LABEL com.github.actions.name="Lazy Action Python" \
   org.opencontainers.image.vendor="AWS ECR" \
   org.opencontainers.image.description="Build and Push Python Packages"
 
-
-
-ARG GLIBC_VER=2.31-r0
 ENV AWS_PAGER=""
 # dockerfile_lint - ignore
 RUN apt-get update &&\
@@ -31,7 +28,6 @@ RUN apt-get update &&\
   git \
   wget \
   bash \
-  sudo \
   curl \
   tzdata \
   ca-certificates \
@@ -42,8 +38,7 @@ RUN apt-get update &&\
   binutils \
   iptables \
   libdevmapper1.02.1 &&\
-  rm -rf matching cache rm /var/lib/apt/lists/* &&\
-  python -m pip --no-cache-dir install coverage
+  rm -rf matching cache rm /var/lib/apt/lists/*
 
 # dockerfile_lint - ignore
 RUN rm -rf /var/lib/apt/lists/* &&\
@@ -53,12 +48,7 @@ RUN rm -rf /var/lib/apt/lists/* &&\
   aws/install &&\
   rm -rf \
   awscliv2.zip \
-  aws \
-  /usr/local/aws-cli/v2/*/dist/aws_completer \
-  /usr/local/aws-cli/v2/*/dist/awscli/data/ac.index \
-  /usr/local/aws-cli/v2/*/dist/awscli/examples \
-  glibc-${GLIBC_VER}.apk \
-  glibc-bin-${GLIBC_VER}.apk &&\
+  aws &&\
   rm -rf /var/cache/apt/* &&\
   aws --version &&\
   set -x &&\
@@ -69,14 +59,9 @@ RUN rm -rf /var/lib/apt/lists/* &&\
     curl -sL https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/docker-ce_20.10.8~3-0~debian-buster_amd64.deb -o docker-ce.deb &&\
     dpkg -i  docker-ce.deb
 
-
-
-
-
 ARG SONAR_SCANNER_VERSION=4.4.0.2170
 ENV PATH $PATH:/sonar-scanner/bin
-RUN set -x \
-  && curl --insecure -o /sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip \
+RUN curl -o /sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip \
     -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip \
   && unzip sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip \
   && mv -v /sonar-scanner-${SONAR_SCANNER_VERSION}  /sonar-scanner/  \
@@ -86,7 +71,8 @@ RUN set -x \
 
 
 SHELL ["/bin/bash", "-e", "-o", "pipefail", "-c"]
-RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/install.sh | sh -s -- -b /usr/local/bin
+RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/install.sh | sh -s -- -b /usr/local/bin &&\
+  curl https://pyenv.run | bash
 
 COPY . /
 

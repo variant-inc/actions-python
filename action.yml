@@ -5,13 +5,13 @@ inputs:
     description: "Directory path to the dockerfile"
     required: true
   ecr_repository:
-    description: "Ecr repository name"
+    description: "ECR repository name"
     required: true
-  container_push_enabled:
-    description: "Enable Build and Push Container Image"
-    required: true
-    default: "true"
+  test_framework:
+    description: "Location where tests are located"
+    required: false
+    default: "pytest"
 runs:
   using: "docker"
-  image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:v1.0.2
+  image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:sha-aa3ba911afab3acffd5ff941f32aedaef71891cd
 

@@ -1,24 +1,36 @@
 #!/bin/bash
 set -euo pipefail
 
-echo "---Start: pytest test"
+echo "---Start: tests"
 REQUIREMENTS_TXT="requirements.txt"
 echo "---pip install"
 if [ -f "$REQUIREMENTS_TXT" ]; then
-  # shellcheck disable=SC1091
-  python -m venv env &&\
-	  source env/bin/activate &&\
-    python -m pip install --upgrade wheel &&\
-    python -m pip install --requirement "$REQUIREMENTS_TXT"
+  if [ "$INPUT_TEST_FRAMEWORK" != unittest ]; then
+    python -m venv env
+    # shellcheck source=/dev/null
+    source env/bin/activate
+  fi
+  pip install --requirement "$REQUIREMENTS_TXT"
 else
   python -m pip install --upgrade pipenv wheel
   pipenv install --dev
 fi
 
-python -m pip install pytest wheel coverage &&\
-	coverage run -m pytest test
+pip install --upgrade wheel coverage
+
+# shellcheck disable=SC1091
+if [ "$INPUT_TEST_FRAMEWORK" = pytest ]; then
+  pip install --upgrade pytest &&
+    coverage run -m pytest
+elif [ "$INPUT_TEST_FRAMEWORK" = unittest ]; then
+  coverage run -m unittest discover
+else
+  echo "Unsupported Test Framework"
+  exit 1
+fi
+
 coverage xml -i -o coverage.xml
-echo "---End: pytest test"
+echo "----End: tests"
 
 pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
 export PULL_REQUEST_KEY=$pull_number
