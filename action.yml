@@ -7,6 +7,10 @@ inputs:
   ecr_repository:
     description: "ECR repository name"
     required: true
+  container_push_enabled:
+    description: "Enable Build and Push Container Image"
+    required: true
+    default: "true"
   test_framework:
     description: "Location where tests are located"
     required: false
