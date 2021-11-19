@@ -3,7 +3,8 @@ description: "Github action to perform build, test , scan and generate image."
 inputs:
   dockerfile_dir_path:
     description: "Directory path to the dockerfile"
-    required: true
+    required: false
+    default: "."
   ecr_repository:
     description: "ECR repository name"
     required: true
@@ -12,10 +13,9 @@ inputs:
     required: true
     default: "true"
   test_framework:
-    description: "Location where tests are located"
+    description: "Framework for Tests"
     required: false
     default: "pytest"
 runs:
   using: "docker"
-  image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:sha-aa3ba911afab3acffd5ff941f32aedaef71891cd
-
+  image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:v1.1.0
