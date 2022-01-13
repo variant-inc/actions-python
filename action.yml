@@ -18,4 +18,4 @@ inputs:
     default: "pytest"
 runs:
   using: "docker"
-  image: "Dockerfile"
+  image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:v1.2.0
