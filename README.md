@@ -125,6 +125,7 @@ jobs:
         with:
           dockerfile_dir_path: '.'
           ecr_repository: naveen-demo-app/demo-repo
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Actions Octopus
         uses: variant-inc/actions-octopus@v1
