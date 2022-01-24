@@ -34,7 +34,7 @@ echo "Print Branch name: $BRANCH_NAME"
 echo "---End: Setting Prerequisites"
 
 echo "Start: Enable sonar"
-  ./actions-collection/scripts/enable_sonar.sh
+./actions-collection/scripts/enable_sonar.sh
 echo "End: Enable sonar"
 
 echo "---Start: Sonar Scan"
