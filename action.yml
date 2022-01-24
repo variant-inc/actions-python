@@ -16,6 +16,12 @@ inputs:
     description: "Framework for Tests"
     required: false
     default: "pytest"
+  github_token:
+    description: "Github token"
+    required: false
+    default: "dummy-token"
 runs:
   using: "docker"
   image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:test-latest
+  env:
+    GITHUB_TOKEN: ${{ inputs.github_token }}

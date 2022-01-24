@@ -60,6 +60,7 @@ Refer [actions-setup](https://github.com/variant-inc/actions-setup) for document
        with:
          dockerfile_dir_path: '.'
          ecr_repository: naveen-demo-app/demo-repo
+         github_token: ${{ secrets.GITHUB_TOKEN }}
     ```
 
 2. (Optionally) Add Script to run before running workflow.
@@ -144,6 +145,7 @@ jobs:
 | `ecr_repository`         |          | ECR Repository name                   | true     |
 | `container_push_enabled` | "true"   | Enable build and push container image | false    |
 | `test_framework`         | "pytest" | Framework for Tests                   | false    |
+| `github_token`           |          | Github token                          | true     |
 
 ### Pre Test Script (optional)
 
