@@ -78,6 +78,4 @@ RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contri
 COPY . /
 
 RUN chmod +x -R /scripts/* /*.sh
-# dev
-RUN pip install pipenv && cd /multideploy && pipenv sync --system
 ENTRYPOINT ["/entrypoint.sh"]
