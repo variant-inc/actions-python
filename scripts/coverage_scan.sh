@@ -16,6 +16,8 @@ else
   pipenv sync --dev --system
 fi
 
+pip install --upgrade wheel coverage
+
 # shellcheck disable=SC1091
 if [ "$INPUT_TEST_FRAMEWORK" = pytest ]; then
   pip install --upgrade pytest &&

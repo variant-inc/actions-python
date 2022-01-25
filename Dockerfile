@@ -1,5 +1,4 @@
-ARG RUNTIME_VERSION="3.9"
-FROM python:${RUNTIME_VERSION}-slim
+FROM python:3.10
 
 ARG BUILD_DATE
 ARG BUILD_REVISION
@@ -40,7 +39,6 @@ RUN apt-get update &&\
   iptables \
   libdevmapper1.02.1 &&\
   rm -rf matching cache rm /var/lib/apt/lists/* &&\
-  pip install --upgrade --no-cache-dir wheel coverage pip
 
 # dockerfile_lint - ignore
 RUN rm -rf /var/lib/apt/lists/* &&\
@@ -79,4 +77,6 @@ RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contri
 COPY . /
 
 RUN chmod +x -R /scripts/* /*.sh
+# dev
+RUN pip install pipenv && cd /multideploy && pipenv sync --system
 ENTRYPOINT ["/entrypoint.sh"]
