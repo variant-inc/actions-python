@@ -52,27 +52,26 @@ RUN rm -rf /var/lib/apt/lists/* &&\
   rm -rf /var/cache/apt/* &&\
   aws --version &&\
   set -x &&\
-    curl -sL https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/containerd.io_1.4.9-1_amd64.deb -o containerd.deb &&\
-    dpkg -i  containerd.deb &&\
-    curl -sL https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/docker-ce-cli_20.10.8~3-0~debian-buster_amd64.deb -o docker-ce-cli.deb &&\
-    dpkg -i  docker-ce-cli.deb &&\
-    curl -sL https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/docker-ce_20.10.8~3-0~debian-buster_amd64.deb -o docker-ce.deb &&\
-    dpkg -i  docker-ce.deb
+  curl -sL https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/containerd.io_1.4.9-1_amd64.deb -o containerd.deb &&\
+  dpkg -i  containerd.deb &&\
+  curl -sL https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/docker-ce-cli_20.10.8~3-0~debian-buster_amd64.deb -o docker-ce-cli.deb &&\
+  dpkg -i  docker-ce-cli.deb &&\
+  curl -sL https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/docker-ce_20.10.8~3-0~debian-buster_amd64.deb -o docker-ce.deb &&\
+  dpkg -i  docker-ce.deb
 
-RUN curl -sLo packages-microsoft-prod.deb https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb &&\
+RUN curl -sLo "packages-microsoft-prod.deb" https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb &&\
   dpkg -i packages-microsoft-prod.deb &&\
-  rm packages-microsoft-prod.deb &&\
-  apt-get update && \
-  add-apt-repository universe &&\
-  apt-get install -y --no-install-recommends powershell &&\
+  apt-get update &&\
+  apt-get install -y --no-install-recommends \
+  powershell &&\
   rm -rf /var/lib/apt/lists/* &&\
-  pwsh -v &&\
-  pwsh -c "Install-Module -Name powershell-yaml,MarkdownPS,Pester,EPS -Force"
+  pwsh -v; \
+  pwsh -c "Install-Module -Name powershell-yaml -Force -Scope AllUsers"
 
 ARG SONAR_SCANNER_VERSION=4.4.0.2170
 ENV PATH $PATH:/sonar-scanner/bin
 RUN curl -o /sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip \
-    -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip \
+  -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip \
   && unzip sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip \
   && mv -v /sonar-scanner-${SONAR_SCANNER_VERSION}  /sonar-scanner/  \
   && ln -s /sonar-scanner/bin/sonar-scanner       /usr/local/bin/     \
