@@ -59,14 +59,6 @@ RUN rm -rf /var/lib/apt/lists/* &&\
   curl -sL https://download.docker.com/linux/debian/dists/buster/pool/stable/amd64/docker-ce_20.10.8~3-0~debian-buster_amd64.deb -o docker-ce.deb &&\
   dpkg -i  docker-ce.deb
 
-RUN curl -sLo "packages-microsoft-prod.deb" https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb &&\
-  dpkg -i packages-microsoft-prod.deb &&\
-  apt-get update &&\
-  apt-get install -y --no-install-recommends \
-  powershell &&\
-  rm -rf /var/lib/apt/lists/* &&\
-  pwsh -v;
-
 ARG SONAR_SCANNER_VERSION=4.4.0.2170
 ENV PATH $PATH:/sonar-scanner/bin
 RUN curl -o /sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip \
@@ -77,6 +69,14 @@ RUN curl -o /sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip \
   && ln -s /sonar-scanner/bin/sonar-scanner-debug /usr/local/bin/ \
   && rm -f sonar-scanner-cli-*.zip
 
+#install powershell
+RUN curl -sLo "packages-microsoft-prod.deb" https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb &&\
+  dpkg -i packages-microsoft-prod.deb &&\
+  apt-get update &&\
+  apt-get install -y --no-install-recommends \
+  powershell &&\
+  rm -rf /var/lib/apt/lists/* &&\
+  pwsh -v;
 
 SHELL ["/bin/bash", "-e", "-o", "pipefail", "-c"]
 RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/install.sh | sh -s -- -b /usr/local/bin &&\
