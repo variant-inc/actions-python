@@ -65,8 +65,7 @@ RUN curl -sLo "packages-microsoft-prod.deb" https://packages.microsoft.com/confi
   apt-get install -y --no-install-recommends \
   powershell &&\
   rm -rf /var/lib/apt/lists/* &&\
-  pwsh -v; \
-  pwsh -c "Install-Module -Name powershell-yaml -Force -Scope AllUsers"
+  pwsh -v;
 
 ARG SONAR_SCANNER_VERSION=4.4.0.2170
 ENV PATH $PATH:/sonar-scanner/bin
