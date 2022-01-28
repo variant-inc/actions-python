@@ -10,8 +10,6 @@ trap finish EXIT
 
 set -xeo pipefail
 
-pip install --upgrade pip
-
 echo "---Start: Setting Prerequisites"
 cd "$GITHUB_WORKSPACE"
 echo "Current directory: $(pwd)"

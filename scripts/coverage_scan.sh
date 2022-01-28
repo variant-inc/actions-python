@@ -12,8 +12,8 @@ if [ -f "$REQUIREMENTS_TXT" ]; then
   fi
   pip install --requirement "$REQUIREMENTS_TXT"
 else
-  python -m pip install --upgrade pipenv wheel
-  pipenv install --dev
+  python -m pip install --upgrade pipenv
+  pipenv sync --dev --system
 fi
 
 pip install --upgrade wheel coverage
