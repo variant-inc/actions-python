@@ -31,6 +31,10 @@ echo "Print Branch name: $BRANCH_NAME"
 
 echo "---End: Setting Prerequisites"
 
+echo "Start: Enable sonar"
+pwsh ./actions-collection/scripts/enable_sonar.ps1
+echo "End: Enable sonar"
+
 echo "---Start: Sonar Scan"
 sh -c "/scripts/coverage_scan.sh"
 echo "---End: Sonar Scan"
