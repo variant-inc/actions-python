@@ -4,7 +4,7 @@ Action for CI workflow for python applications
 
 - [Actions Python](#actions-python)
   - [Prerequisites](#prerequisites)
-    - [1. Setup github action workflow](#1-setup-github-action-workflow)
+    - [1. Setup GitHub action workflow](#1-setup-github-action-workflow)
     - [2. Add actions-setup](#2-add-actions-setup)
     - [3. Add actions-python](#3-add-actions-python)
     - [4. Add octopus action](#4-add-octopus-action)
@@ -21,7 +21,7 @@ Action for CI workflow for python applications
 
 ## Prerequisites
 
-### 1. Setup github action workflow
+### 1. Setup GitHub action workflow
 
 1. On GitHub, navigate to the main page of the repository.
 2. Under your repository name, click Actions.
@@ -29,7 +29,7 @@ Action for CI workflow for python applications
 
 ### 2. Add actions-setup
 
-1. Add a code checkout step this will be needed to add code to the github workspace.
+1. Add a code checkout step this will be needed to add code to the GitHub workspace.
 
     ```yaml
      - uses: actions/checkout@v2
@@ -146,7 +146,7 @@ jobs:
 | `ecr_repository`         |          | ECR Repository name                   | true     |
 | `container_push_enabled` | "true"   | Enable build and push container image | false    |
 | `test_framework`         | "pytest" | Framework for Tests                   | false    |
-| `github_token`           |          | Github token                          | true     |
+| `github_token`           |          | GitHub token                          | true     |
 
 ### Pre Test Script (optional)
 
