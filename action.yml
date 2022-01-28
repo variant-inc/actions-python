@@ -19,9 +19,8 @@ inputs:
   github_token:
     description: "Github token"
     required: true
-    default: "dummy-token"
 runs:
   using: "docker"
-  image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:test-latest
+  image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:1.3.0
   env:
     GITHUB_TOKEN: ${{ inputs.github_token }}
