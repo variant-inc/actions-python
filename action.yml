@@ -18,7 +18,7 @@ inputs:
     default: "pytest"
   github_token:
     description: "Github token"
-    required: false
+    required: true
     default: "dummy-token"
 runs:
   using: "docker"
