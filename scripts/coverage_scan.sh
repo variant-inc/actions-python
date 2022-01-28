@@ -12,8 +12,8 @@ if [ -f "$REQUIREMENTS_TXT" ]; then
   fi
   pip install --requirement "$REQUIREMENTS_TXT"
 else
-  python -m pip install --upgrade pipenv wheel
-  pipenv install --dev
+  python -m pip install --upgrade pipenv
+  pipenv sync --dev --system
 fi
 
 pip install --upgrade wheel coverage
@@ -37,10 +37,16 @@ export PULL_REQUEST_KEY=$pull_number
 
 echo "------Sonar tests."
 
+wait_flag="false"
+if [ "$BRANCH_NAME" == "master" ] || [ "$BRANCH_NAME" == "main" ]; then
+  wait_flag="true"
+fi
+
 sonar_args="-Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=$SONAR_TOKEN \
             -Dsonar.scm.revision=$GITHUB_SHA \
-            -Dsonar.python.coverage.reportPaths=coverage.xml"
+            -Dsonar.python.coverage.reportPaths=coverage.xml \
+            -Dsonar.qualitygate.wait=$wait_flag"
 
 if [ "$PULL_REQUEST_KEY" = null ]; then
   echo "Sonar run when pull request key is null."

@@ -1,4 +1,4 @@
-FROM python:slim
+FROM python:3.10-slim
 
 ARG BUILD_DATE
 ARG BUILD_REVISION
@@ -38,7 +38,8 @@ RUN apt-get update &&\
   binutils \
   iptables \
   libdevmapper1.02.1 &&\
-  rm -rf matching cache rm /var/lib/apt/lists/*
+  rm -rf matching cache rm /var/lib/apt/lists/* &&\
+  pip install --upgrade --no-cache-dir wheel==0.37.1 pip==21.3.1
 
 # dockerfile_lint - ignore
 RUN rm -rf /var/lib/apt/lists/* &&\
