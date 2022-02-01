@@ -22,4 +22,4 @@ inputs:
     default: "false"
 runs:
   using: "docker"
-  image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:v1.2.0
+  image: "Dockerfile" #image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:v1.2.0

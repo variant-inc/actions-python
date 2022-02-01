@@ -73,7 +73,8 @@ RUN curl -o /sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip \
 
 SHELL ["/bin/bash", "-e", "-o", "pipefail", "-c"]
 RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/install.sh | sh -s -- -b /usr/local/bin &&\
-  curl https://pyenv.run | bash
+  curl https://pyenv.run | bash &&\
+  trivy image --download-db-only 
 
 COPY . /
 
