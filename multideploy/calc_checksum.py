@@ -1,14 +1,10 @@
-import asyncio
 import json
-import os
 from pathlib import Path
-import aioboto3
-import asyncio
-import botocore
-import docker
 
+import botocore
 from checksumdir import dirhash
 from loguru import logger
+
 from multideploy.config import settings
 from multideploy.utils import boto_client
 
@@ -40,8 +36,7 @@ async def load_image_hash(repository_name: str, image_tag: str):
         manifest = output["images"][0]["imageManifest"]
         v1_manifest = json.loads(manifest)["history"][0]["v1Compatibility"]
         labels = json.loads(v1_manifest)["config"]["Labels"]
-        # proposed hash label: com.drivevariant.dataops.lambda_dir_hash
-        return labels
+        return labels[settings.HASH_DOCKER_LABEL_NAME]
 
 
 async def calc_dir_hash(repo_dir: Path):
@@ -51,10 +46,3 @@ async def calc_dir_hash(repo_dir: Path):
         ignore_hidden=True,
         excluded_files=[".*", ".*/", "*.pyc"],
     )
-
-    # while building remember to not tag "latest" but with merge number
-    # compare merge request builds with latests
-    # versioning with git short hash
-
-    # scan repo for dirs
-    # load default dockerfile from .common if dockerfile not found in dir
