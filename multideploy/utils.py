@@ -21,7 +21,7 @@ def multiline_log_printer(
 docker_client = docker.from_env()
 boto_client = aioboto3.Session(region_name="us-east-1")
 
-base_dir = Path("/data-lambda-functions")
+base_dir = Path("/github/workspace")
 repo = Repo(base_dir)
 short_hash = repo.git.rev_parse(repo.head.object.hexsha, short=7)
 
