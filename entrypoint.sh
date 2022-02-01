@@ -1,10 +1,11 @@
 #!/bin/bash
 
 if [ "$INPUT_MULTIREPO_MODE" = 'true' ]; then
+    exit_status=0
     echo "Running multirepo mode."
     pip install pipenv && cd /multideploy && pipenv sync --system # dev
-    python -m multideploy
-    exit 0 
+    cd / && python -m multideploy || exit_status=$?
+    exit exit_status
 fi
 
 function finish {
