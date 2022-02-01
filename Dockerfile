@@ -37,6 +37,9 @@ RUN apt-get update &&\
   gzip \
   binutils \
   iptables \
+  apt-transport-https \
+  gnupg \
+  lsb-release \
   libdevmapper1.02.1 &&\
   rm -rf matching cache rm /var/lib/apt/lists/* &&\
   pip install --upgrade --no-cache-dir wheel==0.37.1 pip==21.3.1
@@ -79,9 +82,11 @@ RUN curl -sLo "packages-microsoft-prod.deb" https://packages.microsoft.com/confi
   rm -rf /var/lib/apt/lists/* &&\
   pwsh -v;
 
-SHELL ["/bin/bash", "-e", "-o", "pipefail", "-c"]
-RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/install.sh | sh -s -- -b /usr/local/bin &&\
-  curl https://pyenv.run | bash
+SHELL ["/bin/bash", "-e", "-o", "pipefail", "-c"] 
+RUN wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | apt-key add - &&\
+  echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | tee -a /etc/apt/sources.list.d/trivy.list &&\
+  apt-get update &&\
+  apt-get install trivy
 
 COPY . /
 
