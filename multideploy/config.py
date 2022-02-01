@@ -6,6 +6,7 @@ from pydantic import BaseSettings
 if not "DOCKER_BUILDKIT" in os.environ:
     os.environ["DOCKER_BUILDKIT"] = "1"
 
+print(os.environ) # debug
 
 class Settings(BaseSettings):
     """

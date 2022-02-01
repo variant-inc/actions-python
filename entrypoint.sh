@@ -1,13 +1,5 @@
 #!/bin/bash
 
-if [ "$INPUT_MULTIREPO_MODE" = 'true' ]; then
-    exit_status=0
-    echo "Running multirepo mode."
-    pip install pipenv && cd /multideploy && pipenv sync --system # dev
-    cd / && python -m multideploy || exit_status=$?
-    exit $exit_status
-fi
-
 function finish {
   set -x
   git clean -fdx
@@ -15,6 +7,21 @@ function finish {
 }
 
 trap finish EXIT
+
+export AWS_WEB_IDENTITY_TOKEN_FILE="/token"
+export AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION:=us-east-1}"
+export BRANCH_NAME="$GITVERSION_BRANCHNAME"
+
+echo "$AWS_WEB_IDENTITY_TOKEN" >>"$AWS_WEB_IDENTITY_TOKEN_FILE"
+echo "Print Branch name: $BRANCH_NAME"
+
+if [ "$INPUT_MULTIREPO_MODE" = 'true' ]; then
+    exit_status=0
+    echo "Running multirepo mode."
+    pip install pipenv && cd /multideploy && pipenv sync --system # dev
+    cd / && python -m multideploy || exit_status=$?
+    exit $exit_status
+fi
 
 set -xeo pipefail
 
@@ -28,14 +35,6 @@ git clone -b v1 https://github.com/variant-inc/actions-collection.git ./actions-
 echo "---Start: Pretest script"
 chmod +x ./actions-collection/scripts/pre_test.sh
 ./actions-collection/scripts/pre_test.sh
-
-export AWS_WEB_IDENTITY_TOKEN_FILE="/token"
-echo "$AWS_WEB_IDENTITY_TOKEN" >>"$AWS_WEB_IDENTITY_TOKEN_FILE"
-
-export AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION:=us-east-1}"
-
-export BRANCH_NAME="$GITVERSION_BRANCHNAME"
-echo "Print Branch name: $BRANCH_NAME"
 
 echo "---End: Setting Prerequisites"
 
