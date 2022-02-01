@@ -21,7 +21,7 @@ COMMON_SONAR_CONFIG = {
 }
 
 
-async def run_coverage_scan(lambda_path: Path, docker_image):
+async def run_coverage_scan(docker_image, lambda_path: Path):
     lambda_name = lambda_path.name
 
     local_path = Path("/tmp/") / lambda_name

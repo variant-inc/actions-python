@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [ "$INPUT_MULTIREPO_MODE" = 'true' ]; then
+    echo "Running multirepo mode."
+    pip install pipenv && cd /multideploy && pipenv sync --system # dev
+    python -m multideploy
+    exit 0 
+fi
+
 function finish {
   set -x
   git clean -fdx

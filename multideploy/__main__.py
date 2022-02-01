@@ -48,7 +48,7 @@ async def main():
     # update repos
     for repo_name, (repo_dir, current_hash) in repos_to_update.items():
         image = await build_image(repo_dir, current_hash)
-
+        logger.info(f"Created image with tags {image.tags} for {repo_name}")
         logger.info(f"Running trivy scan for {repo_name}")
         await run_trivy_scan(image.tags[0], repo_dir)
 
