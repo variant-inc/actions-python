@@ -9,5 +9,5 @@ async def ecr_create():
 async def ecr_push():
     # do login, then docker push
     docker_client.login()
-    for line in  client.api.push('yourname/app', stream=True, decode=True)
+    for line in  client.api.push('yourname/app', stream=True, decode=True):
         print(line)
