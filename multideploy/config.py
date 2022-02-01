@@ -6,7 +6,6 @@ from pydantic import BaseSettings
 if not "DOCKER_BUILDKIT" in os.environ:
     os.environ["DOCKER_BUILDKIT"] = "1"
 
-print(os.environ) # debug
 
 class Settings(BaseSettings):
     """
@@ -20,6 +19,7 @@ class Settings(BaseSettings):
         ".git",
         ".common",
         ".pytest_cache",
+        "test-actions",
     ]
     REPO_PREFIX: str = "data-ops"
     TRIVY_S3_BUCKET_NAME: str = "trivy-ops"

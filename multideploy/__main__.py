@@ -5,7 +5,7 @@ import os
 from loguru import logger
 
 from multideploy.exceptions import DeployException
-from multideploy.utils import base_dir
+from multideploy.utils import base_dir, docker_login
 from multideploy.config import settings
 from multideploy.calc_checksum import calc_dir_hash, load_image_hash
 from multideploy.build_image import build_image 
@@ -14,6 +14,7 @@ from multideploy.trivy_scan import run_trivy_scan
 from multideploy.ecr_push import ecr_push
 
 async def main():
+    docker_login_proc = docker_login()
     dir_hash = {}
 
     latest_tag = "latest"
@@ -45,6 +46,7 @@ async def main():
                 d["repo_dir"], current_hash,
             )
 
+    await docker_login_proc
     # update repos
     for repo_name, (repo_dir, current_hash) in repos_to_update.items():
         image = await build_image(repo_dir, current_hash)

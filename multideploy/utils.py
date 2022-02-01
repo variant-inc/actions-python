@@ -1,9 +1,10 @@
+import base64
 from pathlib import Path
 
+import aioboto3
 import docker
 from git import Repo
 from loguru import logger
-import aioboto3
 
 
 def multiline_log_printer(
@@ -38,3 +39,33 @@ async def assume_role(role_arn: str, session_name: str) -> dict:
             "aws_secret_access_key": credentials["SecretAccessKey"],
             "aws_session_token": credentials["SessionToken"],
         }
+
+DOCKER_LOGIN_SUCCEEDED = 'Login Succeeded'
+
+async def docker_login():
+    async with boto_client.client("ecr") as ecr:
+        response = await ecr.get_authorization_token()
+        (
+            docker_username,
+            docker_password,
+            docker_registry,
+        ) = get_docker_username_password_registry(response)
+        docker_login_response  = docker_client.login(
+            username=docker_username,
+            password=docker_password,
+            registry=docker_registry,
+        )
+
+        if DOCKER_LOGIN_SUCCEEDED == docker_login_response.get('Status'):
+            logger.info(f"Logged into docker registry {docker_registry}")
+        else:
+            raise Exception(f"Failed to login to docker registry {docker_registry}")
+
+def get_docker_username_password_registry(token):
+    docker_username, docker_password = (
+        base64.b64decode(token["authorizationData"][0]["authorizationToken"])
+        .decode()
+        .split(":")
+    )
+    docker_registry = token["authorizationData"][0]["proxyEndpoint"]
+    return (docker_username, docker_password, docker_registry)
