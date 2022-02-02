@@ -21,19 +21,18 @@ async def pull_trivy_ignore():
 
         await trivy_bucket.download_file(".trivyignore", base_dir / ".trivyignore")
 
-        trivy_dir = base_dir / "trivy"
-        trivy_dir.mkdir(exist_ok=True)
-
         try:
-            await trivy_bucket.download_file(
-                base_dir.name + "/.trivyignore", trivy_dir / ".trivyignore"
-            )
+            with open(base_dir / ".trivyignore", "ab") as f:
+                await trivy_bucket.download_fileobj(base_dir.name + "/.trivyignore", f)
         except botocore.exceptions.ClientError as e:
             if e.response["Error"]["Code"] == "404":
                 logger.info(f"trivyignore for repo {base_dir.name} does not exist.")
             else:
                 raise
-    breakpoint()
+
+    with open(base_dir / ".trivyignore", "r") as f:
+        logger.info(f"Printing trivy ignore file for repo {base_dir.name}")
+        logger.info(f.read())
 
 
 async def run_trivy_scan(image_name: str, repo_dir: Path):
