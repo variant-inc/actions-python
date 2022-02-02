@@ -1,21 +1,21 @@
-from pathlib import Path
 import asyncio
-import venv
+from pathlib import Path
 
-from multideploy.utils import multiline_log_printer, docker_client
+from loguru import logger
 
+from multideploy.config import settings
 from multideploy.exceptions import CoverageScanException
+from multideploy.utils import docker_client, multiline_log_printer
 
 COMMON_SONAR_CONFIG = {
     "host.url": "https://sonarcloud.io",
-    "organization": "variant",
-    "projectKey": "",
+    "organization": settings.SONAR_ORG,
+    "projectKey": settings.SONAR_PROJECT_KEY,
     "projectName": "",
     "python.coverage.reportPaths": "coverage.xml",
-    "login": "",
-    "scm.revision": "GITHUB_SHA",
+    "login": settings.SONAR_TOKEN,
     "sourceEncoding": "UTF-8",
-    "python.version": "3.9",
+    "python.version": "3.10",
     "python.xunit.reportPaths": "results.xml",
     "coverage.dtdVerification": "false",
 }
@@ -63,22 +63,28 @@ async def sonar_scan(lambda_path: Path, local_path: Path):
     lambda_name = lambda_path.name
     sonar_args = COMMON_SONAR_CONFIG.copy()
 
-    sonar_args["projectKey"] = f"variant-inc_data-{lambda_path.name}"
+    sonar_args["projectKey"] = sonar_args["projectKey"] + "-" + lambda_name
     sonar_args["projectName"] = lambda_path.name
     sonar_args["python.coverage.reportPaths"] = local_path / "coverage.xml"
+    sonar_args["scm.revision"] = settings.GITHUB_SHA
+
+    branch_name = settings.BRANCH_NAME
+    logger.info(f"Branch name: {settings.BRANCH_NAME}")
+
+    if "pull" in branch_name:
+        sonar_args["pullRequest.key"] = branch_name.split("/")[1]
+
+    elif "/" not in branch_name:
+        sonar_args["branch.name"] = branch_name
+        if branch_name in ["master", "main"]:
+            sonar_args["qualitygate.wait"] = "true"
+    else:
+        raise NotImplemented(f"{branch_name} not supported")
 
     sonar_args = " ".join(
         [f"-Dsonar.{key}={value}" for key, value in sonar_args.items()]
     )
 
-    # TODO PR / master branch check
-    """
-    pull_number=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
-    export PULL_REQUEST_KEY=$pull_number
-
-     -Dsonar.branch.name=$BRANCH_NAME
-     -Dsonar.pullrequest.key=$PULL_REQUEST_KEY
-    """
     proc = await asyncio.create_subprocess_shell(
         f"sonar-scanner {sonar_args}",
         stdout=asyncio.subprocess.PIPE,
@@ -88,6 +94,6 @@ async def sonar_scan(lambda_path: Path, local_path: Path):
     stdout, stderr = await proc.communicate()
     multiline_log_printer(lambda_name, "sonar-scanner", "INFO", stdout)
 
-    if proc.returncode != 1:
+    if proc.returncode > 0:
         multiline_log_printer(lambda_name, "sonar-scanner", "ERROR", stderr)
         raise CoverageScanException

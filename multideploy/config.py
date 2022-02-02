@@ -23,6 +23,11 @@ class Settings(BaseSettings):
     ]
     REPO_PREFIX: str = "data-ops"
     TRIVY_S3_BUCKET_NAME: str = "trivy-ops"
+    BRANCH_NAME: str
 
+    # sonar vars
+    SONAR_TOKEN: str
+    SONAR_PROJECT_KEY: str
+    SONAR_ORG: str
 
 settings = Settings()

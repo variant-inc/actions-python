@@ -41,7 +41,7 @@ async def run_trivy_scan(image_name: str, repo_dir: Path):
     await pull_trivy_ignore()
 
     trivy_low = asyncio.create_subprocess_shell(
-        f"trivy image --light --severity=HIGH,MEDIUM,LOW,UNKNOWN {image_name}",
+        f"trivy image --severity=HIGH,MEDIUM,LOW,UNKNOWN {image_name}",
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
         cwd=base_dir
