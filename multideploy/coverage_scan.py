@@ -63,7 +63,7 @@ async def sonar_scan(lambda_path: Path, local_path: Path):
     lambda_name = lambda_path.name
     sonar_args = COMMON_SONAR_CONFIG.copy()
 
-    sonar_args["projectKey"] = sonar_args["projectKey"] + "-" + lambda_name
+    #sonar_args["projectKey"] = sonar_args["projectKey"] + "-" + lambda_name
     sonar_args["projectName"] = lambda_path.name
     sonar_args["python.coverage.reportPaths"] = local_path / "coverage.xml"
     sonar_args["scm.revision"] = settings.GITHUB_SHA
