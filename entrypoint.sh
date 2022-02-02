@@ -6,7 +6,7 @@ function finish {
   set +x
 }
 
-trap finish EXIT
+
 
 export AWS_WEB_IDENTITY_TOKEN_FILE="/token"
 export AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION:=us-east-1}"
@@ -23,6 +23,7 @@ if [ "$INPUT_MULTIREPO_MODE" = 'true' ]; then
     exit $exit_status
 fi
 
+trap finish EXIT
 set -xeo pipefail
 
 echo "---Start: Setting Prerequisites"
