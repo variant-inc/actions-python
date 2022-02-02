@@ -68,3 +68,4 @@ if __name__ == "__main__":
         asyncio.run(main())
     except DeployException as e:
         logger.error(f"Deploy failed at step: {e.step_name}")
+        exit(1)

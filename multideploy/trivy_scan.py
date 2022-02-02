@@ -44,11 +44,13 @@ async def run_trivy_scan(image_name: str, repo_dir: Path):
         f"trivy image --severity=HIGH,MEDIUM,LOW,UNKNOWN {image_name}",
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
+        cwd=base_dir
     )
     trivy_critical = asyncio.create_subprocess_shell(
         f"trivy image --exit-code 1 --severity=CRITICAL {image_name}",
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
+        cwd=base_dir
     )
     proc = await trivy_low
     stdout, stderr = await proc.communicate()
