@@ -48,7 +48,7 @@ async def ecr_push(image: Image):
     tags = [tag]
     if settings.BRANCH_NAME in ["master", "main"]:
         latest_tag = "latest"
-        image.tag(repo_name, tag=latest_tag)
+        image.tag(aws_repo_name, tag=latest_tag)
         tags.append(latest_tag)
 
     for line in docker_client.api.push(aws_repo_name, stream=True, decode=True):
