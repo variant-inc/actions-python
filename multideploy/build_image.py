@@ -7,6 +7,7 @@ from multideploy.exceptions import BuildException
 from multideploy.utils import docker_client, multiline_log_printer, short_hash, base_dir
 from multideploy.config import settings, ecr_repo_name
 
+
 async def build_image(repo_dir: Path, current_hash: str):
     repo_name = repo_dir.name
     logger.info(f"Building image for {repo_name}")
@@ -23,7 +24,7 @@ async def build_image(repo_dir: Path, current_hash: str):
             dockerfile=f"{docker_file_path.name}/Dockerfile",
             rm=True,
             buildargs={"FUNCTION_CODE_DIR": repo_name},
-            labels={"com.drivevariant.dataops.dir_hash": current_hash},
+            labels={settings.HASH_DOCKER_LABEL_NAME: current_hash},
             tag=f"{ecr_repo_name}/{repo_name}:{short_hash}",
         )
         build_log = "".join([line["stream"] for line in build_log if "stream" in line])

@@ -24,8 +24,8 @@ class Settings(BaseSettings):
     REPO_PREFIX: str = "data-ops"
     TRIVY_S3_BUCKET_NAME: str = "trivy-ops"
     BRANCH_NAME: str
-    GITHUB_SHA: str 
-    GITHUB_REPOSITORY_NAME_PART: str 
+    GITHUB_SHA: str
+    GITHUB_REPOSITORY_NAME_PART: str
 
     # sonar vars
     SONAR_TOKEN: str
@@ -36,6 +36,9 @@ class Settings(BaseSettings):
     LAZY_API_KEY: str
 
     AWS_REGION: str
+
+    HASH_DOCKER_LABEL_NAME: str = "com.drivevariant.dataops.dir_hash"
+
 
 settings = Settings()
 ecr_repo_name = f"{settings.REPO_PREFIX}/{settings.GITHUB_REPOSITORY_NAME_PART}"
