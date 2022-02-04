@@ -6,7 +6,7 @@ from loguru import logger
 
 from multideploy.exceptions import DeployException
 from multideploy.utils import base_dir, docker_login
-from multideploy.config import settings
+from multideploy.config import settings, ecr_repo_name
 from multideploy.calc_checksum import calc_dir_hash, load_image_hash
 from multideploy.build_image import build_image 
 from multideploy.coverage_scan import run_coverage_scan
@@ -26,7 +26,7 @@ async def main():
         dir_hash[repo_dir.name] = {
             "current_hash": calc_dir_hash(repo_dir),
             "image_hash": load_image_hash(
-                f"{settings.REPO_PREFIX}/{base_dir.name}/{repo_dir.name}", latest_tag
+                f"{ecr_repo_name}/{repo_dir.name}", latest_tag
             ),
             "repo_dir": repo_dir,
         }

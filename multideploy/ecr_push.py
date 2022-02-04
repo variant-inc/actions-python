@@ -50,6 +50,9 @@ async def ecr_push(image: Image):
     ):
         logger.info(line)
 
+    tags = [tag]
     if settings.BRANCH_NAME in ["master", "main"]:
-        docker_client.api.push(aws_repo_name, tag="latest")
-    logger.info(f"Pushed image named {aws_repo_name} with tags {tag}")
+        latest_tag = "latest"
+        docker_client.api.push(aws_repo_name, tag=latest_tag)
+        tags.append(latest_tag)
+    logger.info(f"Pushed image named {aws_repo_name} with tags {tags}")

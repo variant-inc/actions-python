@@ -25,7 +25,8 @@ class Settings(BaseSettings):
     TRIVY_S3_BUCKET_NAME: str = "trivy-ops"
     BRANCH_NAME: str
     GITHUB_SHA: str 
-    
+    GITHUB_REPOSITORY_NAME_PART: str 
+
     # sonar vars
     SONAR_TOKEN: str
     SONAR_PROJECT_KEY: str
@@ -37,3 +38,4 @@ class Settings(BaseSettings):
     AWS_REGION: str
 
 settings = Settings()
+ecr_repo_name = f"{settings.REPO_PREFIX}/{settings.GITHUB_REPOSITORY_NAME_PART}"
