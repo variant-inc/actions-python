@@ -58,7 +58,7 @@ async def main():
         await run_coverage_scan(image.tags[0], repo_dir)
 
         logger.info(f"Pushing image {image.tags[0]} to ecr for {repo_name}")
-        await ecr_push(image)
+        await ecr_push(image, repo_name)
 
 if __name__ == "__main__":
     if os.name == "nt":  # windows fix

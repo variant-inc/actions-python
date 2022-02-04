@@ -35,13 +35,14 @@ async def ecr_create_if_not_present(ecr_repo: str):
         r.raise_for_status()
 
 
-async def ecr_push(image: Image):
-    repo_name, tag = image.tags[0].split(":", 1)
-    await ecr_create_if_not_present(repo_name)
+async def ecr_push(image: Image, repo_name: str):
+    _, tag = image.tags[0].split(":", 1)
+    ecr_repo_name = f"{settings.ECR_REGISTRY_ID}/{repo_name}"
+    await ecr_create_if_not_present(ecr_repo_name)
 
     aws_repo_name = (
         f"{settings.ECR_REGISTRY_ID}.dkr.ecr.{settings.AWS_REGION}"
-        f".amazonaws.com/{repo_name}"
+        f".amazonaws.com/{ecr_repo_name}"
     )
     image.tag(aws_repo_name, tag=tag)
 
