@@ -26,7 +26,7 @@ async def main():
         dir_hash[repo_dir.name] = {
             "current_hash": calc_dir_hash(repo_dir),
             "image_hash": load_image_hash(
-                f"{settings.REPO_PREFIX}/{repo_dir.name}", latest_tag
+                f"{settings.REPO_PREFIX}/{base_dir.name}/{repo_dir.name}", latest_tag
             ),
             "repo_dir": repo_dir,
         }
@@ -57,8 +57,8 @@ async def main():
         logger.info(f"Running coverage scan for {repo_name}")
         await run_coverage_scan(image.tags[0], repo_dir)
 
-        # upload to ecr
-       # await ecr_push(repo_name, image.tags[0])
+        logger.info(f"Pushing image {image.tags[0]} to ecr for {repo_name}")
+        await ecr_push(image)
 
 if __name__ == "__main__":
     if os.name == "nt":  # windows fix

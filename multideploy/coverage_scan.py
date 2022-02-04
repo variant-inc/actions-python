@@ -84,7 +84,7 @@ async def sonar_scan(lambda_path: Path, local_path: Path):
     sonar_args = " ".join(
         [f"-Dsonar.{key}={value}" for key, value in sonar_args.items()]
     )
-
+    # TODO add dir to sonarcloud monorepo automatically when not exists 
     proc = await asyncio.create_subprocess_shell(
         f"sonar-scanner {sonar_args}",
         stdout=asyncio.subprocess.PIPE,

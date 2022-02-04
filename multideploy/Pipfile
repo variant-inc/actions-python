@@ -10,6 +10,7 @@ loguru = "*"
 docker = "*"
 gitpython = "*"
 pydantic = "*"
+requests = "*"
 
 [dev-packages]
 

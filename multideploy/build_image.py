@@ -11,7 +11,7 @@ async def build_image(repo_dir: Path, current_hash: str):
     repo_name = repo_dir.name
     logger.info(f"Building image for {repo_name}")
 
-    # look for dockerfile in repo_dir if not use default from .common
+    # look for dockerfile in repo_dir if not found use default from .common
     common_dir = Path(base_dir) / ".common"
     docker_file_path = repo_dir
     if not (docker_file_path / "Dockerfile").exists():
@@ -24,7 +24,7 @@ async def build_image(repo_dir: Path, current_hash: str):
             rm=True,
             buildargs={"FUNCTION_CODE_DIR": repo_name},
             labels={"com.drivevariant.dataops.dir_hash": current_hash},
-            tag=f"data-ops/{repo_name}:{short_hash}",
+            tag=f"{settings.REPO_PREFIX}/{repo_name}:{short_hash}",
         )
         build_log = "".join([line["stream"] for line in build_log if "stream" in line])
         multiline_log_printer(repo_name, "docker build", "INFO", build_log.encode())
@@ -36,5 +36,4 @@ async def build_image(repo_dir: Path, current_hash: str):
         multiline_log_printer(repo_name, "docker build", "ERROR", build_log.encode())
         raise BuildException()
 
-    image_obj.tag(f"data-ops/{repo_name}", settings.REPO_PREFIX)
     return image_obj

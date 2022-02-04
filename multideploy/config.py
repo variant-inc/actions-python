@@ -31,4 +31,9 @@ class Settings(BaseSettings):
     SONAR_PROJECT_KEY: str
     SONAR_ORG: str
 
+    LAZY_API_URL: str
+    LAZY_API_KEY: str
+
+    AWS_REGION: str
+
 settings = Settings()
