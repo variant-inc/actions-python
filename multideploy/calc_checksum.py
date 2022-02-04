@@ -40,8 +40,9 @@ async def load_image_hash(repository_name: str, image_tag: str):
         manifest = output["images"][0]["imageManifest"]
         v1_manifest = json.loads(manifest)["history"][0]["v1Compatibility"]
         labels = json.loads(v1_manifest)["config"]["Labels"]
-        # proposed hash label: com.drivevariant.dataops.lambda_dir_hash
-        return labels
+        logger.info(labels)
+        logger.info(type(labels))
+        return labels[settings.HASH_DOCKER_LABEL_NAME]
 
 
 async def calc_dir_hash(repo_dir: Path):
