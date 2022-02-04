@@ -44,15 +44,14 @@ async def ecr_push(image: Image):
         f".amazonaws.com/{repo_name}"
     )
     image.tag(aws_repo_name, tag=tag)
-    # docker_client
-    for line in docker_client.api.push(
-        aws_repo_name, tag=tag, stream=True, decode=True
-    ):
-        logger.info(line)
 
     tags = [tag]
     if settings.BRANCH_NAME in ["master", "main"]:
         latest_tag = "latest"
-        docker_client.api.push(aws_repo_name, tag=latest_tag)
+        image.tag(repo_name, tag=latest_tag)
         tags.append(latest_tag)
+
+    for line in docker_client.api.push(aws_repo_name, stream=True, decode=True):
+        logger.info(line)
+
     logger.info(f"Pushed image named {aws_repo_name} with tags {tags}")
