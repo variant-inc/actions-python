@@ -40,8 +40,6 @@ async def load_image_hash(repository_name: str, image_tag: str):
         manifest = output["images"][0]["imageManifest"]
         v1_manifest = json.loads(manifest)["history"][0]["v1Compatibility"]
         labels = json.loads(v1_manifest)["config"]["Labels"]
-        logger.info(labels)
-        logger.info(type(labels))
         return labels[settings.HASH_DOCKER_LABEL_NAME]
 
 
