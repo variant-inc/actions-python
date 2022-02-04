@@ -34,8 +34,7 @@ async def main():
     # check what repos need to be updated (diffrent checksum)
     repos_to_update = {}
     for repo_name, d in dir_hash.items():
-        labels = await d["current_hash"]
-        current_hash = labels[settings.HASH_DOCKER_LABEL_NAME]
+        current_hash = await d["current_hash"]
         image_hash = await d["image_hash"]
 
         if current_hash != image_hash:
