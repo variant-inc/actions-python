@@ -3,8 +3,9 @@ import urllib.parse
 import requests
 from docker.models.images import Image
 from loguru import logger
-from multideploy.config import settings, ecr_repo_name
-from multideploy.utils import docker_client
+
+from multideploy.config import ecr_repo_name, settings
+from multideploy.utils import detect_main_branch, docker_client
 
 
 async def ecr_create_if_not_present(ecr_repo: str):
@@ -47,7 +48,7 @@ async def ecr_push(image: Image, repo_name: str):
     image.tag(aws_repo_name, tag=tag)
 
     tags = [tag]
-    if settings.BRANCH_NAME in ["master", "main"]:
+    if detect_main_branch():
         latest_tag = "latest"
         image.tag(aws_repo_name, tag=latest_tag)
         tags.append(latest_tag)

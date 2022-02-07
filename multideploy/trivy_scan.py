@@ -1,12 +1,12 @@
 import asyncio
 from pathlib import Path
 
-from loguru import logger
 import botocore
+from loguru import logger
 
 from multideploy.config import settings
 from multideploy.exceptions import TrivyException
-from multideploy.utils import base_dir, boto_client, multiline_log_printer, assume_role
+from multideploy.utils import assume_role, base_dir, boto_client, multiline_log_printer
 
 
 async def pull_trivy_ignore():
@@ -19,7 +19,9 @@ async def pull_trivy_ignore():
 
         trivy_bucket = await s3.Bucket(settings.TRIVY_S3_BUCKET_NAME)
 
-        await trivy_bucket.download_file(".trivyignore", base_dir / ".trivyignore") # TODO can be pulled once
+        await trivy_bucket.download_file(
+            ".trivyignore", base_dir / ".trivyignore"
+        )  # TODO can be pulled once
 
         try:
             with open(base_dir / ".trivyignore", "ab") as f:
@@ -30,7 +32,7 @@ async def pull_trivy_ignore():
             else:
                 raise
 
-    with open(base_dir / ".trivyignore", "r") as f:
+    with open(base_dir / ".trivyignore") as f:
         logger.info(f"Printing trivy ignore file for repo {base_dir.name}")
         logger.info(f.read())
 
@@ -44,13 +46,13 @@ async def run_trivy_scan(image_name: str, repo_dir: Path):
         f"trivy image --severity=HIGH,MEDIUM,LOW,UNKNOWN {image_name}",
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
-        cwd=base_dir
+        cwd=base_dir,
     )
     trivy_critical = asyncio.create_subprocess_shell(
         f"trivy image --exit-code 1 --severity=CRITICAL {image_name}",
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
-        cwd=base_dir
+        cwd=base_dir,
     )
     proc = await trivy_low
     stdout, stderr = await proc.communicate()

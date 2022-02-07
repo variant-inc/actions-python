@@ -1,17 +1,16 @@
-from pathlib import Path
 import asyncio
 import os
 
 from loguru import logger
 
-from multideploy.exceptions import DeployException
-from multideploy.utils import base_dir, docker_login
-from multideploy.config import settings, ecr_repo_name
-from multideploy.calc_checksum import calc_dir_hash, load_image_hash
 from multideploy.build_image import build_image
+from multideploy.calc_checksum import calc_dir_hash, load_image_hash
+from multideploy.config import ecr_repo_name, settings
 from multideploy.coverage_scan import run_coverage_scan
-from multideploy.trivy_scan import run_trivy_scan
 from multideploy.ecr_push import ecr_push
+from multideploy.exceptions import DeployException
+from multideploy.trivy_scan import run_trivy_scan
+from multideploy.utils import base_dir, docker_login
 
 
 async def main():
@@ -19,7 +18,10 @@ async def main():
     dir_hash = {}
 
     latest_tag = "latest"
-    # pick up all directories in base_dir and calculate their checksum + load image checksum
+    """
+        pick up all directories in base_dir
+        calculate their checksum + load image checksum
+    """
     for repo_dir in base_dir.iterdir():
         if not repo_dir.is_dir() or repo_dir.name in settings.REPO_IGNORE_DIRS:
             continue
@@ -40,15 +42,18 @@ async def main():
 
         if current_hash != image_hash:
             logger.info(
-                f"Diffrent checksum for {repo_name}, (current_hash) {current_hash} !="
-                f" {image_hash}"
+                f"Diffrent checksum for {repo_name}, "
+                f"(current_hash) {current_hash} != {image_hash}"
             )
             repos_to_update[repo_name] = (
                 d["repo_dir"],
                 current_hash,
             )
         else:
-            logger.info(f"No different checksum for {repo_name}, skipping. (current_hash) {current_hash} == {image_hash}")
+            logger.info(
+                f"No different checksum for {repo_name},"
+                f"skipping. (current_hash) {current_hash} == {image_hash}"
+            )
 
     await docker_login_proc
     # update repos

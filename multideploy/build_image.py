@@ -3,9 +3,9 @@ from pathlib import Path
 import docker
 from loguru import logger
 
+from multideploy.config import ecr_repo_name, settings
 from multideploy.exceptions import BuildException
-from multideploy.utils import docker_client, multiline_log_printer, short_hash, base_dir
-from multideploy.config import settings, ecr_repo_name
+from multideploy.utils import base_dir, docker_client, multiline_log_printer, short_hash
 
 
 async def build_image(repo_dir: Path, current_hash: str):

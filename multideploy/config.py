@@ -1,9 +1,8 @@
 import os
-from typing import List
 
 from pydantic import BaseSettings
 
-if not "DOCKER_BUILDKIT" in os.environ:
+if "DOCKER_BUILDKIT" not in os.environ:
     os.environ["DOCKER_BUILDKIT"] = "1"
 
 
@@ -13,7 +12,7 @@ class Settings(BaseSettings):
     """
 
     ECR_REGISTRY_ID: str = "064859874041"
-    REPO_IGNORE_DIRS: List[str] = [
+    REPO_IGNORE_DIRS: list[str] = [
         ".github",
         ".idea",
         ".git",
@@ -39,6 +38,6 @@ class Settings(BaseSettings):
 
     HASH_DOCKER_LABEL_NAME: str = "com.drivevariant.dataops.dir_hash"
 
-print(os.environ)
+
 settings = Settings()
 ecr_repo_name = f"{settings.REPO_PREFIX}/{settings.GITHUB_REPOSITORY_NAME_PART}"

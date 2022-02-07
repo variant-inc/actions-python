@@ -5,7 +5,7 @@ from loguru import logger
 
 from multideploy.config import settings
 from multideploy.exceptions import CoverageScanException
-from multideploy.utils import docker_client, multiline_log_printer
+from multideploy.utils import detect_main_branch, docker_client, multiline_log_printer
 
 COMMON_SONAR_CONFIG = {
     "host.url": "https://sonarcloud.io",
@@ -43,8 +43,9 @@ async def run_coverage_scan(docker_image, lambda_path: Path):
 
 
 async def generate_coverage(container, lambda_name: str, local_path: Path):
+    # TODO find a way to install it faster
     script_to_run = (
-        "bash -c 'pip install coverage pytest mock moto &&" # TODO find a way to install it speed up
+        "bash -c 'pip install coverage pytest mock moto &&"
         "cd .. && coverage run -m pytest &&"
         f"python -m coverage xml -i -o {local_path / 'coverage.xml'}'"
     )
@@ -76,15 +77,15 @@ async def sonar_scan(lambda_path: Path, local_path: Path):
 
     elif "/" not in branch_name:
         sonar_args["branch.name"] = branch_name
-        if branch_name in ["master", "main"]:
+        if detect_main_branch():
             sonar_args["qualitygate.wait"] = "true"
     else:
-        raise NotImplemented(f"{branch_name} not supported")
+        raise NotImplementedError(f"{branch_name} not supported")
 
     sonar_args = " ".join(
         [f"-Dsonar.{key}={value}" for key, value in sonar_args.items()]
     )
-    # TODO add dir to sonarcloud monorepo automatically when not exists 
+    # TODO add dir to sonarcloud monorepo automatically when not exists
     proc = await asyncio.create_subprocess_shell(
         f"sonar-scanner {sonar_args}",
         stdout=asyncio.subprocess.PIPE,
