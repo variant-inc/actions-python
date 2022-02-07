@@ -39,6 +39,6 @@ class Settings(BaseSettings):
 
     HASH_DOCKER_LABEL_NAME: str = "com.drivevariant.dataops.dir_hash"
 
-
+print(os.environ)
 settings = Settings()
 ecr_repo_name = f"{settings.REPO_PREFIX}/{settings.GITHUB_REPOSITORY_NAME_PART}"
