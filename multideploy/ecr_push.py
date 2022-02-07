@@ -3,7 +3,7 @@ import urllib.parse
 import requests
 from docker.models.images import Image
 from loguru import logger
-from multideploy.config import settings
+from multideploy.config import settings, ecr_repo_name
 from multideploy.utils import docker_client
 
 
@@ -37,12 +37,12 @@ async def ecr_create_if_not_present(ecr_repo: str):
 
 async def ecr_push(image: Image, repo_name: str):
     _, tag = image.tags[0].split(":", 1)
-    ecr_repo_name = f"{settings.ECR_REGISTRY_ID}/{repo_name}"
-    await ecr_create_if_not_present(ecr_repo_name)
+    ecr_name = f"{ecr_repo_name}/{repo_name}"
+    await ecr_create_if_not_present(ecr_name)
 
     aws_repo_name = (
         f"{settings.ECR_REGISTRY_ID}.dkr.ecr.{settings.AWS_REGION}"
-        f".amazonaws.com/{ecr_repo_name}"
+        f".amazonaws.com/{ecr_name}"
     )
     image.tag(aws_repo_name, tag=tag)
 
