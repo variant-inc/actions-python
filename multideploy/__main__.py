@@ -8,10 +8,11 @@ from multideploy.exceptions import DeployException
 from multideploy.utils import base_dir, docker_login
 from multideploy.config import settings, ecr_repo_name
 from multideploy.calc_checksum import calc_dir_hash, load_image_hash
-from multideploy.build_image import build_image 
+from multideploy.build_image import build_image
 from multideploy.coverage_scan import run_coverage_scan
 from multideploy.trivy_scan import run_trivy_scan
 from multideploy.ecr_push import ecr_push
+
 
 async def main():
     docker_login_proc = docker_login()
@@ -43,8 +44,11 @@ async def main():
                 f" {image_hash}"
             )
             repos_to_update[repo_name] = (
-                d["repo_dir"], current_hash,
+                d["repo_dir"],
+                current_hash,
             )
+        else:
+            logger.info(f"No different checksum for {repo_name}, skipping. (current_hash) {current_hash} == {image_hash}")
 
     await docker_login_proc
     # update repos
@@ -59,6 +63,7 @@ async def main():
 
         logger.info(f"Pushing image {image.tags[0]} to ecr for {repo_name}")
         await ecr_push(image, repo_name)
+
 
 if __name__ == "__main__":
     if os.name == "nt":  # windows fix
