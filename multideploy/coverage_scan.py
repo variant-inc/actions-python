@@ -51,7 +51,7 @@ async def generate_coverage(container, lambda_name: str, local_path: Path):
     pyz_path = local_path / settings.PYZ_TEST_PACKAGE.name
     script_to_run = (
         f"cd .. && python {pyz_path} run -m pytest &&"
-        f"python {pyz_path} xml -i -o {local_path / 'coverage.xml'}'"
+        f"python {pyz_path} xml -i -o {local_path / 'coverage.xml'}"
     )
     # TODO install dev packages from pipenv if available
     exit_code, output = container.exec_run(script_to_run)
