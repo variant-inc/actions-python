@@ -23,7 +23,7 @@ inputs:
   multirepo_scan_path:
     description: "Path to the directory where lambda dirs are located, used for multirepo mode"
     required: false
-    default: "."
+    default: "['.']"
 runs:
   using: "docker"
   image: "Dockerfile" #image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:v1.2.0
