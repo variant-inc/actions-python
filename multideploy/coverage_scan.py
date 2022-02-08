@@ -29,7 +29,14 @@ async def run_coverage_scan(docker_image, lambda_path: Path):
     logger.info(f"Running coverage scan for {lambda_name}")
 
     local_path = Path("/tmp") / lambda_name
-    local_path.mkdir(parents=True, exist_ok=True)
+    local_path.mkdir(parents=True)
+
+    logger.info(
+        f"Copying pyz test runtime from {settings.PYZ_TEST_PACKAGE} to"
+        f" {local_path / settings.PYZ_TEST_PACKAGE.name}"
+    )
+    shutil.copy(settings.PYZ_TEST_PACKAGE, local_path / settings.PYZ_TEST_PACKAGE.name)
+    logger.info(f"Listing {[local_path.iterdir()]}")
     volumes = {str(local_path): {"bind": str(ARTIFACTS_PATH), "mode": "rw"}}
     container = docker_client.containers.run(
         docker_image,
@@ -39,12 +46,6 @@ async def run_coverage_scan(docker_image, lambda_path: Path):
         entrypoint="bash",
         volumes=volumes,
     )
-
-    logger.info(
-        f"Copying pyz test runtime from {settings.PYZ_TEST_PACKAGE} to"
-        f" {local_path / settings.PYZ_TEST_PACKAGE.name}"
-    )
-    shutil.copy(settings.PYZ_TEST_PACKAGE, local_path / settings.PYZ_TEST_PACKAGE.name)
 
     await generate_coverage(container, lambda_name, local_path)
 
@@ -62,7 +63,9 @@ async def generate_coverage(container, lambda_name: str, local_path: Path):
     #    f"python {pyz_path} xml -i -o {ARTIFACTS_PATH / 'coverage.xml'}'"
     # )
     # TODO install dev packages from pipenv if available
-    exit_code, output = container.exec_run(f"bash -c 'ls && ls {ARTIFACTS_PATH}'")
+    exit_code, output = container.exec_run(
+        f"bash -c 'ls && echo 'next' &&  ls {ARTIFACTS_PATH}' && echo 'end'"
+    )
 
     if exit_code == 0:
         multiline_log_printer(lambda_name, "coverage scan", "INFO", output)
