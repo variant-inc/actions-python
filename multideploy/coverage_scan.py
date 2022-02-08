@@ -29,7 +29,7 @@ async def run_coverage_scan(docker_image, lambda_path: Path):
     logger.info(f"Running coverage scan for {lambda_name}")
 
     local_path = Path("/tmp") / lambda_name
-
+    local_path.mkdir(parents=True, exist_ok=True)
     volumes = {str(ARTIFACTS_PATH): {"bind": str(local_path), "mode": "rw"}}
     container = docker_client.containers.run(
         docker_image,
