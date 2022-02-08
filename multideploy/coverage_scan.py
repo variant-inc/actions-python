@@ -27,6 +27,7 @@ async def run_coverage_scan(docker_image, lambda_path: Path):
     logger.info(f"Running coverage scan for {lambda_name}")
 
     local_path = Path("/tmp/") / lambda_name
+    local_path.mkdir(exist_ok=True, parents=True)
     shutil.copy(settings.PYZ_TEST_PACKAGE, local_path / settings.PYZ_TEST_PACKAGE.name)
 
     volumes = {local_path: {"bind": "/test_artifacts", "mode": "rw"}}
