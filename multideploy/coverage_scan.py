@@ -49,6 +49,8 @@ async def run_coverage_scan(docker_image, lambda_path: Path):
 
 async def generate_coverage(container, lambda_name: str, local_path: Path):
     pyz_path = local_path / settings.PYZ_TEST_PACKAGE.name
+    logger.info(f"Executing {pyz_path}")
+
     script_to_run = (
         f"bash -c 'cd .. && python {pyz_path} run -m pytest &&"
         f"python {pyz_path} xml -i -o {local_path / 'coverage.xml'}'"
