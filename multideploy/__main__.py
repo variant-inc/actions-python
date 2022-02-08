@@ -25,7 +25,7 @@ async def main():
     paths_to_check = []
 
     for dir_to_check in settings.INPUT_MULTIREPO_SCAN_PATH:
-        paths_to_check.extend([(base_dir / dir_to_check).iterdir()])
+        paths_to_check.extend((base_dir / dir_to_check).iterdir())
 
     for repo_dir in paths_to_check:
         if not repo_dir.is_dir() or repo_dir.name in settings.REPO_IGNORE_DIRS:
