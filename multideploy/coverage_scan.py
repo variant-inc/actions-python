@@ -36,7 +36,7 @@ async def run_coverage_scan(docker_image, lambda_path: Path):
         f" {local_path / settings.PYZ_TEST_PACKAGE.name}"
     )
     shutil.copy(settings.PYZ_TEST_PACKAGE, local_path / settings.PYZ_TEST_PACKAGE.name)
-    logger.info(f"Listing {[local_path.iterdir()]}")
+    logger.info(f"Listing {list(local_path.iterdir())}")
     volumes = {str(local_path): {"bind": str(ARTIFACTS_PATH), "mode": "rw"}}
     container = docker_client.containers.run(
         docker_image,
