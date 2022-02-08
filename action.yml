@@ -20,6 +20,10 @@ inputs:
     description: "Instead of following default execution path, use the multirepo mode"
     required: false
     default: "false"
+  multirepo_scan_path:
+    description: "Path to the directory where lambda dirs are located, used for multirepo mode"
+    required: false
+    default: "."
 runs:
   using: "docker"
   image: "Dockerfile" #image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:v1.2.0

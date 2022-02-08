@@ -37,6 +37,7 @@ async def ecr_create_if_not_present(ecr_repo: str):
 
 
 async def ecr_push(image: Image, repo_name: str):
+    logger.info(f"Pushing image {image.tags[0]} to ecr for {repo_name}")
     _, tag = image.tags[0].split(":", 1)
     ecr_name = f"{ecr_repo_name}/{repo_name}"
     await ecr_create_if_not_present(ecr_name)

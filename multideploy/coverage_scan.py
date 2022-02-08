@@ -1,4 +1,5 @@
 import asyncio
+import shutil
 from pathlib import Path
 
 from loguru import logger
@@ -23,8 +24,11 @@ COMMON_SONAR_CONFIG = {
 
 async def run_coverage_scan(docker_image, lambda_path: Path):
     lambda_name = lambda_path.name
+    logger.info(f"Running coverage scan for {lambda_name}")
 
     local_path = Path("/tmp/") / lambda_name
+    shutil.copy(settings.PYZ_TEST_PACKAGE, local_path / settings.PYZ_TEST_PACKAGE.name)
+
     volumes = {local_path: {"bind": "/test_artifacts", "mode": "rw"}}
     container = docker_client.containers.run(
         docker_image,
@@ -43,11 +47,10 @@ async def run_coverage_scan(docker_image, lambda_path: Path):
 
 
 async def generate_coverage(container, lambda_name: str, local_path: Path):
-    # TODO find a way to install it faster
+    pyz_path = local_path / settings.PYZ_TEST_PACKAGE.name
     script_to_run = (
-        "bash -c 'pip install coverage pytest mock moto &&"
-        "cd .. && coverage run -m pytest &&"
-        f"python -m coverage xml -i -o {local_path / 'coverage.xml'}'"
+        f"cd .. && python {pyz_path} run -m pytest &&"
+        f"python {pyz_path} xml -i -o {local_path / 'coverage.xml'}'"
     )
     # TODO install dev packages from pipenv if available
     exit_code, output = container.exec_run(script_to_run)

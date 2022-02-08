@@ -1,5 +1,6 @@
 import asyncio
 import os
+from pathlib import Path
 
 from loguru import logger
 
@@ -22,7 +23,12 @@ async def main():
         pick up all directories in base_dir
         calculate their checksum + load image checksum
     """
-    for repo_dir in base_dir.iterdir():
+    paths_to_check = []
+
+    for dir_to_check in settings.INPUT_MULTIREPO_SCAN_PATH:
+        paths_to_check.extend([base_dir / Path(dir_to_check).iterdir()])
+
+    for repo_dir in paths_to_check:
         if not repo_dir.is_dir() or repo_dir.name in settings.REPO_IGNORE_DIRS:
             continue
 
@@ -59,14 +65,8 @@ async def main():
     # update repos
     for repo_name, (repo_dir, current_hash) in repos_to_update.items():
         image = await build_image(repo_dir, current_hash)
-        logger.info(f"Created image with tags {image.tags} for {repo_name}")
-        logger.info(f"Running trivy scan for {repo_name}")
         await run_trivy_scan(image.tags[0], repo_dir)
-
-        logger.info(f"Running coverage scan for {repo_name}")
         await run_coverage_scan(image.tags[0], repo_dir)
-
-        logger.info(f"Pushing image {image.tags[0]} to ecr for {repo_name}")
         await ecr_push(image, repo_name)
 
 

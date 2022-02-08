@@ -39,7 +39,7 @@ async def pull_trivy_ignore():
 
 async def run_trivy_scan(image_name: str, repo_dir: Path):
     repo_name = repo_dir.name
-
+    logger.info(f"Running trivy scan for {repo_name}")
     await pull_trivy_ignore()
 
     trivy_low = asyncio.create_subprocess_shell(

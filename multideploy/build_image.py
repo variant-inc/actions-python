@@ -37,4 +37,5 @@ async def build_image(repo_dir: Path, current_hash: str):
         multiline_log_printer(repo_name, "docker build", "ERROR", build_log.encode())
         raise BuildException()
 
+    logger.info(f"Created image with tags {image_obj.tags} for {repo_name}")
     return image_obj
