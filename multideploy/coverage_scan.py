@@ -62,7 +62,7 @@ async def generate_coverage(container, lambda_name: str, local_path: Path):
     #    f"python {pyz_path} xml -i -o {ARTIFACTS_PATH / 'coverage.xml'}'"
     # )
     # TODO install dev packages from pipenv if available
-    exit_code, output = container.exec_run(f"ls && ls {ARTIFACTS_PATH}")
+    exit_code, output = container.exec_run(f"bash -c 'ls && ls {ARTIFACTS_PATH}'")
 
     if exit_code == 0:
         multiline_log_printer(lambda_name, "coverage scan", "INFO", output)
