@@ -38,7 +38,7 @@ class Settings(BaseSettings):
     AWS_REGION: str
 
     HASH_DOCKER_LABEL_NAME: str = "com.drivevariant.dataops.dir_hash"
-    PYZ_TEST_PACKAGE: Path = Path("coverage.pyz")
+    PYZ_TEST_PACKAGE: Path = Path("/coverage.pyz")
     INPUT_MULTIREPO_SCAN_PATH: list = ["."]
 
 
