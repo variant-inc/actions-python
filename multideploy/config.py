@@ -41,6 +41,8 @@ class Settings(BaseSettings):
     PYZ_TEST_PACKAGE: Path = Path("/coverage.pyz")
     INPUT_MULTIREPO_SCAN_PATH: list = ["."]
 
+    GitVersion_SemVer: str
+
 
 settings = Settings()
 ecr_repo_name = f"{settings.REPO_PREFIX}/{settings.GITHUB_REPOSITORY_NAME_PART}"

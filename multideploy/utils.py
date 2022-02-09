@@ -3,7 +3,6 @@ from pathlib import Path
 
 import aioboto3
 import docker
-from git import Repo
 from loguru import logger
 
 from multideploy.config import settings
@@ -26,8 +25,6 @@ docker_client = docker.from_env()
 boto_client = aioboto3.Session(region_name="us-east-1")
 
 base_dir = Path("/github/workspace")
-repo = Repo(base_dir)
-short_hash = repo.git.rev_parse(repo.head.object.hexsha, short=7)
 
 
 async def assume_role(role_arn: str, session_name: str) -> dict:

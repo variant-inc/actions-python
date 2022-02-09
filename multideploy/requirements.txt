@@ -1,7 +1,6 @@
 aioboto3==9.3.1
 checksumdir==1.2.0
 docker==5.0.3
-GitPython==3.1.26
 loguru==0.6.0
 pydantic==1.9.0
 requests==2.27.1

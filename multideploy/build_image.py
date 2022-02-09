@@ -5,7 +5,7 @@ from loguru import logger
 
 from multideploy.config import ecr_repo_name, settings
 from multideploy.exceptions import BuildException
-from multideploy.utils import base_dir, docker_client, multiline_log_printer, short_hash
+from multideploy.utils import base_dir, docker_client, multiline_log_printer
 
 
 async def build_image(repo_dir: Path, current_hash: str):
@@ -25,7 +25,7 @@ async def build_image(repo_dir: Path, current_hash: str):
             rm=True,
             buildargs={"FUNCTION_CODE_DIR": repo_name},
             labels={settings.HASH_DOCKER_LABEL_NAME: current_hash},
-            tag=f"{ecr_repo_name}/{repo_name}:{short_hash}",
+            tag=f"{ecr_repo_name}/{repo_name}:{settings.GitVersion_SemVer}",
         )
         build_log = "".join([line["stream"] for line in build_log if "stream" in line])
         multiline_log_printer(repo_name, "docker build", "INFO", build_log.encode())
