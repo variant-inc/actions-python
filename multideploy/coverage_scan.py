@@ -1,4 +1,5 @@
 import asyncio
+import shutil
 from pathlib import Path
 
 from loguru import logger
@@ -49,6 +50,7 @@ async def run_coverage_scan(docker_image, lambda_path: Path):
     # cleanup
     container.stop()
     await sonar_scan(lambda_path, local_path)
+    shutil.rmtree(local_path)
 
 
 async def generate_coverage(container, lambda_name: str, local_path: Path):
