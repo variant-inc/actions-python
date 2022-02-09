@@ -28,14 +28,17 @@ async def run_coverage_scan(docker_image, lambda_path: Path):
     lambda_name = lambda_path.name
     logger.info(f"Running coverage scan for {lambda_name}")
 
-    local_path = Path("/tmp") / lambda_name
+    local_path = (
+        Path("/home/github/work/data-base-template/data-base-template/tmp")
+        / lambda_name
+    )
     local_path.mkdir(parents=True)
-
     logger.info(
         f"Copying pyz test runtime from {settings.PYZ_TEST_PACKAGE} to"
         f" {local_path / settings.PYZ_TEST_PACKAGE.name}"
     )
     shutil.copy(settings.PYZ_TEST_PACKAGE, local_path / settings.PYZ_TEST_PACKAGE.name)
+
     logger.info(f"Listing {list(local_path.iterdir())}")
     volumes = {str(local_path): {"bind": str(ARTIFACTS_PATH), "mode": "rw"}}
     container = docker_client.containers.run(
