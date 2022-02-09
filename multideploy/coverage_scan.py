@@ -28,12 +28,10 @@ async def run_coverage_scan(docker_image, lambda_path: Path):
     lambda_name = lambda_path.name
     logger.info(f"Running coverage scan for {lambda_name}")
 
-    path_suffix = Path("tmp") / lambda_name
     real_path = (
-        Path("/home/github/work/data-base-template/data-base-template") / path_suffix
+        Path("/home/github/work/data-base-template/data-base-template") / lambda_name
     )
-    local_path = Path("/github/workspace") / path_suffix
-    local_path.mkdir(parents=True)
+    local_path = Path("/github/workspace") / lambda_name
 
     volumes = {str(real_path): {"bind": str(ARTIFACTS_PATH), "mode": "rw"}}
     container = docker_client.containers.run(
