@@ -1,5 +1,4 @@
 import asyncio
-import shutil
 from pathlib import Path
 
 from loguru import logger
@@ -34,11 +33,6 @@ async def run_coverage_scan(docker_image, lambda_path: Path):
     )
     local_path = Path("/github/workspace") / path_suffix
     local_path.mkdir(parents=True)
-    logger.info(
-        f"Copying pyz test runtime from {settings.PYZ_TEST_PACKAGE} to"
-        f" {local_path / settings.PYZ_TEST_PACKAGE.name}"
-    )
-    shutil.copy(settings.PYZ_TEST_PACKAGE, local_path / settings.PYZ_TEST_PACKAGE.name)
 
     volumes = {str(real_path): {"bind": str(ARTIFACTS_PATH), "mode": "rw"}}
     container = docker_client.containers.run(
@@ -58,12 +52,11 @@ async def run_coverage_scan(docker_image, lambda_path: Path):
 
 
 async def generate_coverage(container, lambda_name: str, local_path: Path):
-    pyz_path = ARTIFACTS_PATH / settings.PYZ_TEST_PACKAGE.name
-    logger.info(f"Executing {pyz_path}")
 
     script_to_run = (
-        f"bash -c 'cd .. && python {pyz_path} run -m pytest &&"
-        f"python {pyz_path} xml -i -o {ARTIFACTS_PATH / 'coverage.xml'}'"
+        "bash -c 'pip install coverage pytest mock moto &&"
+        "cd .. && coverage run -m pytest &&"
+        f"python -m coverage xml -i -o {local_path / 'coverage.xml'}'"
     )
     exit_code, output = container.exec_run(script_to_run)
 

@@ -77,6 +77,6 @@ RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contri
   trivy image --download-db-only
 
 COPY . /
-RUN pip install --no-cache-dir -r multideploy/requirements.txt && chmod +x multideploy/pyz_create.sh && ./multideploy/pyz_create.sh
+RUN pip install --no-cache-dir -r multideploy/requirements.txt
 RUN chmod +x -R /scripts/* /*.sh
 ENTRYPOINT ["/entrypoint.sh"]
