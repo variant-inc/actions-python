@@ -20,6 +20,7 @@ class Settings(BaseSettings):
         ".common",
         ".pytest_cache",
         "test-actions",
+        ".octopus",
     ]
     REPO_PREFIX: str = "data-ops"
     TRIVY_S3_BUCKET_NAME: str = "trivy-ops"
