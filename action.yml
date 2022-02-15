@@ -24,6 +24,11 @@ inputs:
     description: "Path to the directory where lambda dirs are located, used for multirepo mode"
     required: false
     default: '["."]'
+  github_token:
+    description: "Github token"
+    required: true
 runs:
   using: "docker"
-  image: "Dockerfile" #image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:v1.2.0
+  image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:v1.3.0
+  env:
+    GITHUB_TOKEN: ${{ inputs.github_token }}
