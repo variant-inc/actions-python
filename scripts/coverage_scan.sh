@@ -1,6 +1,30 @@
 #!/bin/bash
 set -euo pipefail
 
+sonar_logout() {
+  exit_code=$?
+  echo "Exit code is $exit_code"
+  if [ "$exit_code" -eq 0 ]; then
+    echo -e "\e[1;32m ________________________________________________________________\e[0m"
+    echo -e "\e[1;32m Quality Gate Passed.\e[0m"
+    echo -e "\e[1;32m ________________________________________________________________\e[0m"
+  elif [ "$exit_code" -gt 0 ]; then
+    set -e
+    echo -e "\e[1;31m ________________________________________________________________\e[0m"
+    echo -e "\e[1;31m ________________________________________________________________\e[0m"
+    echo ""
+    echo ""
+    echo -e "\e[1;31m Sonar Quality Gate failed in $SONAR_PROJECT_KEY.\e[0m"
+    echo ""
+    echo ""
+    echo -e "\e[1;31m ________________________________________________________________\e[0m"
+    echo -e "\e[1;31m ________________________________________________________________\e[0m"
+    exit 1 
+  fi
+}
+
+trap "sonar_logout" EXIT
+
 echo "---Start: tests"
 REQUIREMENTS_TXT="requirements.txt"
 echo "---pip install"
