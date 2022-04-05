@@ -13,6 +13,7 @@ set -xeo pipefail
 echo "---Start: Setting Prerequisites"
 cd "$GITHUB_WORKSPACE"
 echo "Current directory: $(pwd)"
+pip install --upgrade --no-cache-dir wheel pip
 
 echo "Cloning into actions-collection..."
 git clone -b v1 https://github.com/variant-inc/actions-collection.git ./actions-collection

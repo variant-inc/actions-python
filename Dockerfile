@@ -38,8 +38,7 @@ RUN apt-get update &&\
   binutils \
   iptables \
   libdevmapper1.02.1 &&\
-  rm -rf matching cache rm /var/lib/apt/lists/* &&\
-  pip install --upgrade --no-cache-dir wheel==0.37.1 pip==22.0.4
+  rm -rf matching cache rm /var/lib/apt/lists/*
 
 # dockerfile_lint - ignore
 RUN rm -rf /var/lib/apt/lists/* &&\
