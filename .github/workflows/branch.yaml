@@ -11,6 +11,10 @@ jobs:
     name: Branch Build & Push
     runs-on: [test]
     steps:
+      - uses: step-security/harden-runner@9b0655f430fba8c7001d4e38f8d4306db5c6e0ab # v1
+        with:
+          egress-policy: audit
+
       - name: Checkout Code
         uses: actions/checkout@v2
         with:
