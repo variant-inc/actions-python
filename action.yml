@@ -21,6 +21,6 @@ inputs:
     required: true
 runs:
   using: "docker"
-  image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:v1.2.2
+  image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:test-latest
   env:
     GITHUB_TOKEN: ${{ inputs.github_token }}
