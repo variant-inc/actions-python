@@ -16,7 +16,7 @@ echo "Current directory: $(pwd)"
 pip install --upgrade --no-cache-dir wheel pip
 
 echo "Cloning into actions-collection..."
-git clone -b v1 https://github.com/variant-inc/actions-collection.git ./actions-collection
+git clone -b f/CLOUD-1740-skip-image-push https://github.com/variant-inc/actions-collection.git ./actions-collection
 
 echo "---Start: Pretest script"
 chmod +x ./actions-collection/scripts/pre_test.sh
@@ -55,7 +55,7 @@ if [ "$INPUT_CONTAINER_PUSH_ENABLED" = 'true' ]; then
   ./actions-collection/scripts/ecr_create.sh "$INPUT_ECR_REPOSITORY"
   echo "End: Checking ECR Repo"
   echo "Start: Publish Image to ECR"
-  ./actions-collection/scripts/publish.sh
+  pwsh ./actions-collection/scripts/publish.ps1
   echo "End: Publish Image to ECR"
 fi
 
