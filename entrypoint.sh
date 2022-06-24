@@ -55,7 +55,7 @@ if [ "$INPUT_CONTAINER_PUSH_ENABLED" = 'true' ]; then
   ./actions-collection/scripts/ecr_create.sh "$INPUT_ECR_REPOSITORY"
   echo "End: Checking ECR Repo"
   echo "Start: Publish Image to ECR"
-  ./actions-collection/scripts/publish.sh
+  pwsh ./actions-collection/scripts/publish.ps1
   echo "End: Publish Image to ECR"
 fi
 
