@@ -16,6 +16,7 @@ echo "Current directory: $(pwd)"
 pip install --upgrade --no-cache-dir wheel pip
 
 echo "Cloning into actions-collection..."
+# revert to v1 after fix
 git clone -b h/cloud-1856-trivy-scan https://github.com/variant-inc/actions-collection.git ./actions-collection
 
 echo "---Start: Pretest script"
