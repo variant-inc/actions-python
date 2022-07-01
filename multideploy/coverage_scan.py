@@ -2,11 +2,17 @@ import asyncio
 import shutil
 from pathlib import Path
 
+import requests
 from loguru import logger
 
 from multideploy.config import settings
 from multideploy.exceptions import CoverageScanException
-from multideploy.utils import detect_main_branch, docker_client, multiline_log_printer
+from multideploy.utils import (
+    append_to_step_summary,
+    detect_main_branch,
+    docker_client,
+    multiline_log_printer,
+)
 
 COMMON_SONAR_CONFIG = {
     "host.url": "https://sonarcloud.io",
@@ -66,11 +72,54 @@ async def generate_coverage(container, lambda_name: str, container_path: Path):
         raise CoverageScanException
 
 
+async def create_sonar_project_if_404(project_key: str, project_name: str):
+    r = requests.get(
+        "https://sonarcloud.io/api/alm_integration/is_bound_to_monorepo",
+        query={"project": project_key},
+    )
+
+    if r.status_code == 404:
+        repo_name = settings.GITHUB_REPOSITORY
+        r = requests.get(
+            f"https://api.github.com/repos/{repo_name}",
+            headers={
+                "Authorization": f"Bearer {settings.GITHUB_TOKEN}",
+                "Accept": "application/json",
+            },
+        )
+        r.raise_for_status()
+        repo_id = r.json()["id"]
+
+        payload = {
+            "projects": [
+                {
+                    "projectKey": project_key,
+                    "projectName": project_name,
+                    "installationKey": f"{repo_name}|{repo_id}",
+                }
+            ],
+            "organization": settings.SONAR_ORG,
+        }
+        r = requests.post(
+            "https://sonarcloud.io/api/alm_integration/provision_monorepo_projects",
+            json=payload,
+        )
+        if r.status_code == 200:
+            append_to_step_summary(
+                f"Created new sonar project {project_key} named {project_name}"
+            )
+            logger.info(f"Created new sonar project {project_key} named {project_name}")
+        else:
+            logger.error(f"Failed to create Sonar project {project_key}")
+            raise CoverageScanException
+
+
 async def sonar_scan(lambda_path: Path, local_path: Path):
     lambda_name = lambda_path.name
     sonar_args = COMMON_SONAR_CONFIG.copy()
 
     logger.info(f"List of artifacts: {list(local_path.glob('*'))}")
+
     sonar_args["projectKey"] = sonar_args["projectKey"] + "-" + lambda_name
     sonar_args["projectName"] = lambda_path.name
     sonar_args["python.coverage.reportPaths"] = local_path / "coverage.xml"
@@ -93,6 +142,8 @@ async def sonar_scan(lambda_path: Path, local_path: Path):
         [f"-Dsonar.{key}={value}" for key, value in sonar_args.items()]
     )
     # TODO add dir to sonarcloud monorepo automatically when not exists
+    # Check ALM binding of project 'variant-inc_dataops-base-template-lambda_one'
+
     proc = await asyncio.create_subprocess_shell(
         f"sonar-scanner {sonar_args}",
         stdout=asyncio.subprocess.PIPE,

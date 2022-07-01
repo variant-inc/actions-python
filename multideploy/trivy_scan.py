@@ -42,31 +42,18 @@ async def run_trivy_scan(image_name: str, repo_dir: Path):
     logger.info(f"Running trivy scan for {repo_name}")
     await pull_trivy_ignore()
 
-    trivy_low = asyncio.create_subprocess_shell(
-        f"trivy image --ignore-unfixed --severity=HIGH,MEDIUM,LOW,UNKNOWN {image_name}",
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-        cwd=base_dir,
-    )
     trivy_critical = asyncio.create_subprocess_shell(
         f"trivy image --ignore-unfixed --exit-code 1 --severity=CRITICAL {image_name}",
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
         cwd=base_dir,
     )
-    proc = await trivy_low
-    stdout, stderr = await proc.communicate()
-    multiline_log_printer(repo_name, "trivy_low", "INFO", stdout)
-
-    if proc.returncode > 0:
-        multiline_log_printer(repo_name, "trivy_low", "ERROR", stderr)
-        raise TrivyException
 
     proc = await trivy_critical
     stdout, stderr = await proc.communicate()
 
-    multiline_log_printer(repo_name, "trivy_critical", "INFO", stdout)
+    multiline_log_printer(repo_name, "trivy_scan", "INFO", stdout)
 
     if proc.returncode > 0:
-        multiline_log_printer(repo_name, "trivy_critical", "ERROR", stderr)
+        multiline_log_printer(repo_name, "trivy_scan", "ERROR", stderr)
         raise TrivyException

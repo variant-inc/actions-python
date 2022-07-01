@@ -26,7 +26,9 @@ class Settings(BaseSettings):
     TRIVY_S3_BUCKET_NAME: str = "trivy-ops"
     BRANCH_NAME: str
     GITHUB_SHA: str
+    GITHUB_REPOSITORY: str
     GITHUB_REPOSITORY_NAME_PART: str
+    GITHUB_TOKEN: str
 
     # sonar vars
     SONAR_TOKEN: str
