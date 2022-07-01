@@ -7,12 +7,7 @@ from loguru import logger
 
 from multideploy.config import settings
 from multideploy.exceptions import CoverageScanException
-from multideploy.utils import (
-    append_to_step_summary,
-    detect_main_branch,
-    docker_client,
-    multiline_log_printer,
-)
+from multideploy.utils import detect_main_branch, docker_client, multiline_log_printer
 
 COMMON_SONAR_CONFIG = {
     "host.url": "https://sonarcloud.io",
@@ -68,16 +63,24 @@ async def generate_coverage(container, lambda_name: str, container_path: Path):
         multiline_log_printer(lambda_name, "coverage scan", "INFO", output)
     else:
         multiline_log_printer(lambda_name, "coverage scan", "ERROR", output)
+        logger.error(f"### {lambda_name} coverage scan failed", summary=True)
         container.stop()
         raise CoverageScanException
 
 
 async def create_sonar_project_if_404(project_key: str, project_name: str):
+    sonar_headers = {
+        "Authorization": f"Bearer {settings.SONAR_TOKEN}",
+        "Accept": "application/json",
+    }
+
     r = requests.get(
         "https://sonarcloud.io/api/alm_integration/is_bound_to_monorepo",
-        query={"project": project_key},
+        params={"project": project_key},
+        headers=sonar_headers,
     )
 
+    logger.info(f"is_bound_to_monorepo {r.status_code} {r.text} ")
     if r.status_code == 404:
         repo_name = settings.GITHUB_REPOSITORY
         r = requests.get(
@@ -103,10 +106,12 @@ async def create_sonar_project_if_404(project_key: str, project_name: str):
         r = requests.post(
             "https://sonarcloud.io/api/alm_integration/provision_monorepo_projects",
             json=payload,
+            headers=sonar_headers,
         )
         if r.status_code == 200:
-            append_to_step_summary(
-                f"Created new sonar project {project_key} named {project_name}"
+            logger.info(
+                f"#### Created new sonar project {project_key} named {project_name}",
+                summary=True,
             )
             logger.info(f"Created new sonar project {project_key} named {project_name}")
         else:
@@ -138,11 +143,13 @@ async def sonar_scan(lambda_path: Path, local_path: Path):
     else:
         raise NotImplementedError(f"{branch_name} not supported")
 
+    await create_sonar_project_if_404(
+        sonar_args["projectKey"], sonar_args["projectName"]
+    )
+
     sonar_args = " ".join(
         [f"-Dsonar.{key}={value}" for key, value in sonar_args.items()]
     )
-    # TODO add dir to sonarcloud monorepo automatically when not exists
-    # Check ALM binding of project 'variant-inc_dataops-base-template-lambda_one'
 
     proc = await asyncio.create_subprocess_shell(
         f"sonar-scanner {sonar_args}",

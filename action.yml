@@ -27,6 +27,9 @@ inputs:
   github_token:
     description: "Github token"
     required: true
+outputs:
+  step_summary:
+    description: "GH Actions step summary"
 runs:
   using: "docker"
   image: "docker://{modified_by_script}"

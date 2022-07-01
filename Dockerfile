@@ -21,6 +21,7 @@ LABEL com.github.actions.name="Lazy Action Python" \
 
 ENV AWS_PAGER=""
 # dockerfile_lint - ignore
+ENV PIP_NO_CACHE_DIR=1
 RUN apt-get update &&\
   apt-get install \
   --no-install-recommends \
@@ -38,8 +39,7 @@ RUN apt-get update &&\
   binutils \
   iptables \
   libdevmapper1.02.1 &&\
-  rm -rf matching cache rm /var/lib/apt/lists/* &&\
-  pip install --upgrade --no-cache-dir wheel==0.37.1 pip==21.3.1
+  rm -rf matching cache rm /var/lib/apt/lists/*
 
 # dockerfile_lint - ignore
 RUN rm -rf /var/lib/apt/lists/* &&\
@@ -85,6 +85,6 @@ RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contri
   trivy image --download-db-only
 
 COPY . /
-RUN pip install --no-cache-dir -r multideploy/requirements.txt
+RUN pip install -r multideploy/requirements.txt && pip install pipenv
 RUN chmod +x -R /scripts/* /*.sh
 ENTRYPOINT ["/entrypoint.sh"]

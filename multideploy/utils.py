@@ -1,5 +1,4 @@
 import base64
-import os
 from pathlib import Path
 
 import aioboto3
@@ -77,8 +76,3 @@ def get_docker_username_password_registry(token):
 
 def detect_main_branch():
     return settings.BRANCH_NAME in ["master", "main"]
-
-
-def append_to_step_summary(text: str):
-    summary = os.getenv("GITHUB_STEP_SUMMARY")
-    os.putenv("GITHUB_STEP_SUMMARY", summary + text)

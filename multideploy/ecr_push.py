@@ -57,4 +57,4 @@ async def ecr_push(image: Image, repo_name: str):
     for line in docker_client.api.push(aws_repo_name, stream=True, decode=True):
         logger.info(line)
 
-    logger.info(f"Pushed image named {aws_repo_name} with tags {tags}")
+    logger.info(f"Pushed image named {aws_repo_name} with tags {tags}", summary=True)

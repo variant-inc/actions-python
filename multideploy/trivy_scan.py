@@ -56,4 +56,5 @@ async def run_trivy_scan(image_name: str, repo_dir: Path):
 
     if proc.returncode > 0:
         multiline_log_printer(repo_name, "trivy_scan", "ERROR", stderr)
+        logger.error(f"### {repo_name} trivy scan failed", summary=True)
         raise TrivyException
