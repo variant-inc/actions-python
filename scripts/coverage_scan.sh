@@ -25,7 +25,19 @@ sonar_logout() {
 
 trap "sonar_logout" EXIT
 
-source sonar-project.properties
+while IFS=" " read -r p || [ -n "$p" ]
+do
+    propKey=$(echo $p | cut -f1 -d'=')
+    propVal=$(echo $p | cut -f2 -d'=')
+  if [ "sonar.projectKey" == "$propKey" ]; then
+    printf 'Found %s\n' "$propKey"
+    echo "INPUT_SONAR_PROJECT_KEY=$propVal" >>"$GITHUB_ENV"
+  fi
+  if [ "sonar.projectName" == "$propKey" ]; then
+    printf 'Found %s\n' "$propKey"
+    echo "INPUT_SONAR_PROJECT_NAME=$propVal" >>"$GITHUB_ENV"
+  fi
+done < ./sonar-project.properties
 
 echo "---Start: tests"
 REQUIREMENTS_TXT="requirements.txt"
@@ -68,7 +80,7 @@ if [ "$BRANCH_NAME" == "master" ] || [ "$BRANCH_NAME" == "main" ]; then
   wait_flag="true"
 fi
 
-SONAR_PROJECT_NAME="${sonar.projectName:=$SONAR_PROJECT_KEY}"
+SONAR_PROJECT_NAME="${INPUT_SONAR_PROJECT_NAME:=$SONAR_PROJECT_KEY}"
 
 sonar_args="-Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=$SONAR_TOKEN \
@@ -76,7 +88,7 @@ sonar_args="-Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.python.coverage.reportPaths=coverage.xml \
             -Dsonar.qualitygate.wait=$wait_flag \
             -Dsonar.projectKey=$SONAR_PROJECT_KEY \
-            -Dsonar.projectName=SONAR_PROJECT_NAME"
+            -Dsonar.projectName=$SONAR_PROJECT_NAME"
 
 if [ "$PULL_REQUEST_KEY" = null ]; then
   echo "Sonar run when pull request key is null."
