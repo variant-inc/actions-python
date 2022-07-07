@@ -25,6 +25,8 @@ sonar_logout() {
 
 trap "sonar_logout" EXIT
 
+source sonar-project.properties
+
 echo "---Start: tests"
 REQUIREMENTS_TXT="requirements.txt"
 echo "---pip install"
@@ -66,12 +68,15 @@ if [ "$BRANCH_NAME" == "master" ] || [ "$BRANCH_NAME" == "main" ]; then
   wait_flag="true"
 fi
 
+SONAR_PROJECT_NAME="${sonar.projectName:=$SONAR_PROJECT_KEY}"
+
 sonar_args="-Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=$SONAR_TOKEN \
             -Dsonar.scm.revision=$GITHUB_SHA \
             -Dsonar.python.coverage.reportPaths=coverage.xml \
             -Dsonar.qualitygate.wait=$wait_flag \
-            -Dsonar.projectKey=$SONAR_PROJECT_KEY"
+            -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+            -Dsonar.projectName=SONAR_PROJECT_NAME"
 
 if [ "$PULL_REQUEST_KEY" = null ]; then
   echo "Sonar run when pull request key is null."
