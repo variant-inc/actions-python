@@ -21,6 +21,6 @@ inputs:
     required: true
 runs:
   using: "docker"
-  image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:sha-13165ea225c3e844c7f1a10c49125c5cc5d8ff38
+  image: docker://public.ecr.aws/p4v7w0a5/lazy/python-action:sha-609aed73242d0123b29bfa9f62f8679f87ab6308
   env:
     GITHUB_TOKEN: ${{ inputs.github_token }}
