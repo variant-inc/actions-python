@@ -54,7 +54,7 @@ async def generate_coverage(container, lambda_name: str, container_path: Path):
 
     script_to_run = (
         "bash -c 'pip install coverage pytest mock moto pytest-freezegun &&"
-        "pipenv install --dev &&"
+        "pipenv install --dev --system &&"
         f"mkdir -p {container_path} && coverage run -m pytest &&"
         f"python -m coverage xml -i -o {container_path / 'coverage.xml'}'"
     )
