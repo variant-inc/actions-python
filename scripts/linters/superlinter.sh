@@ -13,7 +13,6 @@ docker run -e RUN_LOCAL=true \
   -e VALIDATE_TERRAFORM_TFLINT=false \
   -e VALIDATE_KUBERNETES_KUBEVAL=false \
   -e "FILTER_REGEX_EXCLUDE=.*env/.*" \
-  -e "LOG_LEVEL=ERROR" \
-  -e "SHELLCHECK_OPTS=-e SC2086" \
+  -e "LOG_LEVEL=VERBOSE" \
   -v "$(pwd)":/tmp/lint \
   github/super-linter:slim-v4

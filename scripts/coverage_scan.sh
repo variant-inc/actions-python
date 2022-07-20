@@ -25,20 +25,6 @@ sonar_logout() {
 
 trap "sonar_logout" EXIT
 
-while IFS=" " read -r p || [ -n "$p" ]
-do
-    propKey=$(echo $p | cut -f1 -d'=')
-    propVal=$(echo $p | cut -f2 -d'=')
-  if [ "sonar.projectKey" == "$propKey" ]; then
-    printf 'Found %s\n' "$propKey"
-    echo "INPUT_SONAR_PROJECT_KEY=$propVal" >>"$GITHUB_ENV"
-  fi
-  if [ "sonar.projectName" == "$propKey" ]; then
-    printf 'Found %s\n' "$propKey"
-    echo "INPUT_SONAR_PROJECT_NAME=$propVal" >>"$GITHUB_ENV"
-  fi
-done < ./sonar-project.properties
-
 echo "---Start: tests"
 REQUIREMENTS_TXT="requirements.txt"
 echo "---pip install"
