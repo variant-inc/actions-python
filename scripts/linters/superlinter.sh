@@ -8,6 +8,7 @@ cleanup() {
   echo "Cleaning up..."
   docker stop -t0 $(docker ps -a | grep "$1" | awk -F ' ' '{print $1}') && \
   docker rm $(docker ps -a | grep "$1" | awk -F ' ' '{print $1}')
+  exit 0
 }
 
 docker pull $image
