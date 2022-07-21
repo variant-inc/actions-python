@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+# set -e
 
 image="github/super-linter:slim-v4"
 # shellcheck disable=SC2046
