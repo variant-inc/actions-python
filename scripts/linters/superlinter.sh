@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# set -e
+set -e
 
 image="github/super-linter:slim-v4"
 # shellcheck disable=SC2046
@@ -28,4 +28,4 @@ docker run -e RUN_LOCAL=true \
   -v "$(pwd)":/tmp/lint \
   $image
 
-cleanup $image &> /dev/null
+# cleanup $image &> /dev/null
