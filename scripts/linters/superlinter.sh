@@ -2,19 +2,12 @@
 
 set -e
 
-image="github/super-linter:slim-v4"
-# shellcheck disable=SC2046
-cleanup() {
-  echo "Cleaning up..."
-  docker stop $(docker ps -a | grep "$1" | awk -F ' ' '{print $1}') && \
-  docker rm $(docker ps -a | grep "$1" | awk -F ' ' '{print $1}') &> /dev/null
-}
-
-# trap cleanup $image EXIT
+image=github/super-linter:slim-v4
 
 docker pull $image
 
-docker run -e RUN_LOCAL=true \
+docker run --rm \
+  -e RUN_LOCAL=true \
   -e VALIDATE_PYTHON_BLACK=false \
   -e VALIDATE_PYTHON_ISORT=false \
   -e VALIDATE_PYTHON_MYPY=false \
@@ -27,5 +20,3 @@ docker run -e RUN_LOCAL=true \
   -e "LOG_LEVEL=VERBOSE" \
   -v "$(pwd)":/tmp/lint \
   $image
-
-# cleanup $image &> /dev/null
