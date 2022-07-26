@@ -70,7 +70,8 @@ sonar_args="-Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=$SONAR_TOKEN \
             -Dsonar.scm.revision=$GITHUB_SHA \
             -Dsonar.python.coverage.reportPaths=coverage.xml \
-            -Dsonar.qualitygate.wait=$wait_flag"
+            -Dsonar.qualitygate.wait=$wait_flag \
+            -Dsonar.projectVersion=$GITHUB_SHA"
 
 if [ "$PULL_REQUEST_KEY" = null ]; then
   echo "Sonar run when pull request key is null."
