@@ -61,10 +61,10 @@ export PULL_REQUEST_KEY=$pull_number
 
 echo "------Sonar tests."
 
-wait_flag="false"
-if [ "$BRANCH_NAME" == "master" ] || [ "$BRANCH_NAME" == "main" ]; then
-  wait_flag="true"
-fi
+wait_flag="true"
+# if [ "$BRANCH_NAME" == "master" ] || [ "$BRANCH_NAME" == "main" ]; then
+#   wait_flag="true"
+# fi
 
 sonar_args="-Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=$SONAR_TOKEN \
