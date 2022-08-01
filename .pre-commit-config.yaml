@@ -1,0 +1,8 @@
+repos:
+  - repo: local
+    hooks:
+      - id: super-linter
+        name: super-linter
+        description: runs super-linter
+        entry: scripts/linters/superlinter.sh
+        language: script
