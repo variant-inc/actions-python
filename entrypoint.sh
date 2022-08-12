@@ -1,9 +1,9 @@
 #!/bin/bash
 
 function finish {
-  set -x
-  git clean -fdx
-  set +x
+    set -x
+    git clean -fdx
+    set +x
 }
 
 trap finish EXIT
@@ -42,21 +42,21 @@ echo "Skip sonar run: $skip_sonar_run"
 echo "End: Check sonar run"
 
 if [ "$skip_sonar_run" != 'True' ]; then
-  echo "---Start: Sonar Scan"
-  sh -c "/scripts/coverage_scan.sh"
-  echo "---End: Sonar Scan"
+    echo "---Start: Sonar Scan"
+    sh -c "/scripts/coverage_scan.sh"
+    echo "---End: Sonar Scan"
 else
-  echo "Skipping sonar run"
+    echo "Skipping sonar run"
 fi
 
 echo "Container Push: $INPUT_CONTAINER_PUSH_ENABLED"
 if [ "$INPUT_CONTAINER_PUSH_ENABLED" = 'true' ]; then
-  echo "Start: Checking ECR Repo"
-  ./actions-collection/scripts/ecr_create.sh "$INPUT_ECR_REPOSITORY"
-  echo "End: Checking ECR Repo"
-  echo "Start: Publish Image to ECR"
-  pwsh ./actions-collection/scripts/publish.ps1
-  echo "End: Publish Image to ECR"
+    echo "Start: Checking ECR Repo"
+    ./actions-collection/scripts/ecr_create.sh "$INPUT_ECR_REPOSITORY"
+    echo "End: Checking ECR Repo"
+    echo "Start: Publish Image to ECR"
+    pwsh ./actions-collection/scripts/publish.ps1
+    echo "End: Publish Image to ECR"
 fi
 
 echo "---Start: Clean up"
