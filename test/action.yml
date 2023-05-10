@@ -1,4 +1,5 @@
-name: "Test Python"
+---
+name: Test Python
 description: >
   Github action to build & test.
 inputs:
@@ -15,7 +16,7 @@ inputs:
       using the python-version or python-version-file inputs.
     required: false
 runs:
-  using: "composite"
+  using: composite
   steps:
     - name: Find Python Packager
       id: packager

@@ -1,18 +1,20 @@
-name: "Actions Python"
+---
+# yamllint disable rule:line-length
+name: Actions Python
 description: >
   Github action to perform build, test , scan and generate image.
 inputs:
   dockerfile_dir_path:
-    description: "Directory path to the dockerfile"
+    description: Directory path to the dockerfile
     required: false
-    default: "."
+    default: .
   ecr_repository:
-    description: "ECR repository name"
+    description: ECR repository name
     required: true
   container_push_enabled:
-    description: "Enable Build and Push Container Image"
+    description: Enable Build and Push Container Image
     required: true
-    default: "true"
+    default: 'true'
   python-version:
     description: >
       The python-version input is optional.
@@ -26,7 +28,7 @@ inputs:
       using the python-version or python-version-file inputs.
     required: false
 runs:
-  using: "composite"
+  using: composite
   steps:
     - name: Setup Actions
       uses: variant-inc/actions-setup@v2
