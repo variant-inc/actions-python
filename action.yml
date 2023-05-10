@@ -28,9 +28,12 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Setup Actions
+      uses: variant-inc/actions-setup@v2
+
     - name: Sonar Setup
       id: sonar-setup
-      uses: variant-inc/actions-collection/sonar-setup@f/v2
+      uses: variant-inc/actions-collection/sonar-setup@v2
 
     - name: Get Action ref
       id: action-ref
@@ -46,7 +49,7 @@ runs:
         python-version: ${{ inputs.python-version }}
 
     - name: Build and Push Image
-      uses: variant-inc/actions-collection/build-push-image@f/v2
+      uses: variant-inc/actions-collection/build-push-image@v2
       if: ${{ inputs.container_push_enabled == 'true' }}
       with:
         dockerfile_dir_path: ${{ inputs.dockerfile_dir_path }}
