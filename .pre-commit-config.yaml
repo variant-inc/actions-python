@@ -1,15 +1,18 @@
 repos:
+  - repo: local
+    hooks:
+      - id: action-docs
+        name: action-docs
+        entry: ./scripts/action-docs.sh
+        language: system
+        files: 'action.yml'
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.3.0
     hooks:
-    -   id: check-yaml
-    -   id: end-of-file-fixer
-    -   id: trailing-whitespace
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.31.1
     hooks:
-    - id: markdownlint
-  - repo: https://github.com/lovesegfault/beautysh
-    rev: v6.2.1
-    hooks:
-    - id: beautysh
+      - id: markdownlint
