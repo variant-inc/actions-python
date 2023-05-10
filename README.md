@@ -2,22 +2,32 @@
 
 Action for CI workflow for python applications
 
-- [Actions Python](#actions-python)
-  - [Prerequisites](#prerequisites)
-    - [1. Setup GitHub action workflow](#1-setup-github-action-workflow)
-    - [2. Add actions-setup](#2-add-actions-setup)
-    - [3. Add actions-python](#3-add-actions-python)
-    - [4. Add octopus action](#4-add-octopus-action)
-  - [Using Python Action](#using-python-action)
-    - [Adding actions-python to workflow](#adding-actions-python-to-workflow)
-    - [Input Parameters](#input-parameters)
-    - [Pre Test Script (optional)](#pre-test-script-optional)
-      - [Example (actions-python)](#example-actions-python)
+<!-- action-docs-description -->
+## Description
 
-  - [Using Python Action](#using-python-action)
-    - [Adding actions-python to workflow](#adding-actions-python-to-workflow)
-  - [parameters](#parameters)
-    - [Input Parameters](#input-parameters)
+Github action to perform build, test , scan and generate image.
+<!-- action-docs-description -->
+
+<!-- action-docs-inputs -->
+## Inputs
+
+| parameter | description | required | default |
+| --- | --- | --- | --- |
+| dockerfile_dir_path | Directory path to the dockerfile | `false` | . |
+| ecr_repository | ECR repository name | `true` |  |
+| container_push_enabled | Enable Build and Push Container Image | `true` | true |
+| python-version | The python-version input is optional. If not supplied, the action will try to resolve the version from the default `.python-version` file. If the `.python-version` file doesn't exist Python or PyPy version from the PATH will be used. The default version of Python or PyPy in PATH varies between runners and can be changed unexpectedly so we recommend always setting Python version explicitly using the python-version or python-version-file inputs.  | `false` |  |
+<!-- action-docs-inputs -->
+
+<!-- action-docs-outputs -->
+
+<!-- action-docs-outputs -->
+
+<!-- action-docs-runs -->
+## Runs
+
+This action is a `composite` action.
+<!-- action-docs-runs -->
 
 ## Prerequisites
 
@@ -75,96 +85,7 @@ Refer [actions-setup](https://github.com/variant-inc/actions-setup) for document
       curl
     ```
 
-### 4. Add octopus action
-
-1. Adding octopus action will add ability to set up continuous delivery to octopus. This action can be invoked by action name and release version.
-
-    ```yaml
-     - name: Actions Octopus
-       uses: variant-inc/actions-octopus@v1
-       with:
-         default_branch: ${{ env.MASTER_BRANCH }}
-         deploy_scripts_path: deploy
-         project_name: ${{ env.PROJECT_NAME }}
-         version: ${{ steps.actions-setup.outputs.image-version }}
-         space_name: ${{ env.OCTOPUS_SPACE_NAME }}
-    ```
-
-Refer [octopus action](https://github.com/variant-inc/actions-octopus) for documentation.
-
 ## Using Python Action
 
 You can set up continuous integration for your project using this workflow action.
 After you set up CI, you can customize the workflow to meet your needs. By passing the right input parameters with the actions python.
-
-### Adding actions-python to workflow
-
-Sample snippet to add actions-python to your workflow code.
-See [action.yml](action.yml) for the full documentation for this action's inputs and outputs.
-
-```yaml
-jobs:
-  build_test_scan:
-    runs-on: eks
-    name: CI Pipeline
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Actions Setup
-        uses: variant-inc/actions-setup@v1
-          id: actions-setup
-
-      - name: Actions Python
-        id: actions-python
-        uses: variant-inc/actions-python@v1
-        env:
-          AWS_DEFAULT_REGION: us-east-1
-          AWS_REGION: us-east-1
-        with:
-          dockerfile_dir_path: '.'
-          ecr_repository: naveen-demo-app/demo-repo
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Actions Octopus
-        uses: variant-inc/actions-octopus@v1
-        with:
-          default_branch: ${{ env.MASTER_BRANCH }}
-          deploy_scripts_path: deploy
-          project_name: ${{ env.PROJECT_NAME }}
-          version: ${{ steps.actions-setup.outputs.image-version }}
-          space_name: ${{ env.OCTOPUS_SPACE_NAME }}
-
-```
-
-### Input Parameters
-
-| Parameter                | Default  | Description                           | Required |
-| ------------------------ | -------- | ------------------------------------- | -------- |
-| `dockerfile_dir_path`    | "."      | Directory path to the dockerfile      | false    |
-| `ecr_repository`         |          | ECR Repository name                   | true     |
-| `container_push_enabled` | "true"   | Enable build and push container image | false    |
-| `test_framework`         | "pytest" | Framework for Tests                   | false    |
-| `github_token`           |          | GitHub token                          | true     |
-
-### Pre Test Script (optional)
-
-When using actions-python create a file in .github/actions/pre_test.sh.
-
-Include any dependant packages your app requires when testing. These packages will need to be installed using a Debian package manager.
-
-#### Example (actions-python)
-
-```bash
-#!/bin/bash
-
-echo "____INSTALLING_SVN_____"
-apt-get install --no-install-recommends -y \
-  subversion
-
-echo "____INSTALLING_PWSH_____"
-wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb
-dpkg -i packages-microsoft-prod.deb
-apt-get install -y powershell
-```

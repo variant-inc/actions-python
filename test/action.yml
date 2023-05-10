@@ -1,0 +1,87 @@
+name: "Test Python"
+description: >
+  Github action to build & test.
+inputs:
+  python-version:
+    description: >
+      The python-version input is optional.
+      If not supplied, the action will try to resolve the
+      version from the default `.python-version` file.
+      If the `.python-version` file doesn't exist Python or PyPy
+      version from the PATH will be used.
+      The default version of Python or PyPy in PATH varies
+      between runners and can be changed unexpectedly
+      so we recommend always setting Python version explicitly
+      using the python-version or python-version-file inputs.
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - name: Find Python Packager
+      id: packager
+      shell: bash
+      run: |
+        echo "packager=pip" >> $GITHUB_OUTPUT
+        if [ -f "requirements.txt" ]; then
+            echo "packager=pip" >> $GITHUB_OUTPUT
+        fi
+        if [ -f "Pipfile" ]; then
+            echo "packager=pipenv" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.python-version }}
+        cache: ${{ steps.packager.outputs.packager }}
+    - name: Upgrade Packages
+      shell: bash
+      run: |
+        echo "::group::Upgrade Packages"
+        pip install --upgrade --no-cache-dir \
+          wheel pip pytest pipenv coverage
+        echo "::endgroup::"
+    - name: Run pre_test.sh
+      shell: bash
+      run: |
+        pretest_cmd="echo 'NO_PRETEST'"
+        if [ -f ".github/actions/pre_test.sh" ]; then
+            pretest_cmd="$(cat .github/actions/pre_test.sh)"
+        fi
+        echo "pretest_cmd: $pretest_cmd"
+        sh -c "${pretest_cmd}"
+
+    - name: Install Python Packages
+      shell: bash
+      run: |
+        echo "::group::Install Python Packages"
+        if [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt
+        fi
+        if [ -f "Pipfile" ]; then
+            pipenv sync --dev --system
+        fi
+        echo "::endgroup::"
+    - name: Test with pytest
+      shell: bash
+      run: |
+        echo "::group::Test with pytest"
+        coverage run -m pytest
+        echo "::endgroup::"
+
+    - name: Collect Coverage Results
+      shell: bash
+      run: |
+        echo "::group::Collect Coverage Results"
+        coverage xml -i -o coverage.xml
+        echo "::endgroup::"
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ env.SECRET__GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ env.SECRET__SONAR_TOKEN }}
+      with:
+        args: >
+          -Dsonar.qualitygate.wait=${{ steps.sonar-setup.outputs.wait_flag }}
+          -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
+          -Dsonar.organization=${{ env.SONAR_ORG }}
