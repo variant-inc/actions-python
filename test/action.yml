@@ -1,19 +1,25 @@
 ---
 name: Test Python
-description: >
-  Github action to build & test.
+description: |
+  Github Action to Build & Test Python
+
+  RequiredEnv:
+    GITHUB_TOKEN
+    SONAR_TOKEN
 inputs:
   python-version:
-    description: >
+    description: |
       The python-version input is optional.
       If not supplied, the action will try to resolve the
       version from the default `.python-version` file.
+
       If the `.python-version` file doesn't exist Python or PyPy
       version from the PATH will be used.
+
       The default version of Python or PyPy in PATH varies
       between runners and can be changed unexpectedly
       so we recommend always setting Python version explicitly
-      using the python-version or python-version-file inputs.
+      using the python-version inputs.
     required: false
 runs:
   using: composite
@@ -35,7 +41,7 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
         cache: ${{ steps.packager.outputs.packager }}
-    - name: Upgrade Packages
+    - name: Install or Upgrade Packages for Build Setup
       shell: bash
       run: |
         echo "::group::Upgrade Packages"
@@ -52,7 +58,7 @@ runs:
         echo "pretest_cmd: $pretest_cmd"
         sh -c "${pretest_cmd}"
 
-    - name: Install Python Packages
+    - name: Install Application Python Packages
       shell: bash
       run: |
         echo "::group::Install Python Packages"
@@ -78,11 +84,9 @@ runs:
         echo "::endgroup::"
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ env.SECRET__GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ env.SECRET__SONAR_TOKEN }}
       with:
         args: >
           -Dsonar.qualitygate.wait=${{ steps.sonar-setup.outputs.wait_flag }}
           -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
           -Dsonar.organization=${{ env.SONAR_ORG }}
+          -Dsonar.python.coverage.reportPaths=coverage.xml
