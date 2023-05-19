@@ -29,9 +29,6 @@ runs:
       shell: bash
       run: |
         echo "packager=pip" >> $GITHUB_OUTPUT
-        if [ -f "requirements.txt" ]; then
-            echo "packager=pip" >> $GITHUB_OUTPUT
-        fi
         if [ -f "Pipfile" ]; then
             echo "packager=pipenv" >> $GITHUB_OUTPUT
         fi
