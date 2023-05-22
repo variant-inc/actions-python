@@ -81,3 +81,8 @@ runs:
         dockerfile_dir_path: ${{ inputs.dockerfile_dir_path }}
         ecr_repository: ${{ inputs.ecr_repository }}
         aws_region: ${{ inputs.aws_region }}
+
+    - shell: bash
+      name: Set Language env
+      run: |
+        echo "LANGUAGE=python" >> "$GITHUB_ENV"
