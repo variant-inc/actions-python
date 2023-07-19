@@ -73,6 +73,7 @@ runs:
       if: ${{ steps.sonar-setup.outputs.sonar_skip != 'True' }}
       with:
         python-version: ${{ inputs.python-version }}
+        sonar_wait_flag: ${{ steps.sonar-setup.outputs.wait_flag }}
 
     - name: Build and Push Image
       uses: variant-inc/actions-collection/build-push-image@v2
