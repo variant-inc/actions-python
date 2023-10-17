@@ -26,6 +26,14 @@ permissions:
         ecr_repository: 'demo/example'
         python-version: 3.10
 ```
+
+## Locating Container Images
+
+ECR containers can be located with this URI.
+
+```text
+064859874041.dkr.ecr.us-east-2.amazonaws.com/<ecr_repository>
+```
 <!-- action-docs-description -->
 
 <!-- action-docs-inputs -->
