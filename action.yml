@@ -67,7 +67,7 @@ runs:
   using: composite
   steps:
     - name: Setup Actions
-      uses: variant-inc/actions-setup@dependabot/github_actions/gittools/actions-3
+      uses: variant-inc/actions-setup@v2
 
     - name: Sonar Setup
       id: sonar-setup
