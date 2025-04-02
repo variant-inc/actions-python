@@ -32,8 +32,13 @@ runs:
       shell: bash
       run: |
         echo "packager=pip" >> $GITHUB_OUTPUT
-        if [ -f "Pipfile" ]; then
+        if [ -f "Pipfile.lock" ]; then
+            echo "PIPENV_VENV_IN_PROJECT=1" >> $GITHUB_ENV
             echo "packager=pipenv" >> $GITHUB_OUTPUT
+        fi
+        if [ -f "poetry.lock" ]; then
+            pipx install poetry
+            echo "packager=poetry" >> $GITHUB_OUTPUT
         fi
 
     - name: Set up Python
@@ -41,13 +46,21 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
         cache: ${{ steps.packager.outputs.packager }}
+
     - name: Install or Upgrade Packages for Build Setup
       shell: bash
+      env:
+        PYTHON_PACKAGER: ${{ steps.packager.outputs.packager }}
       run: |
-        echo "::group::Upgrade Packages"
+        # echo "::group::Install Packages"
+        if [ "$PYTHON_PACKAGER" == "pipenv" ]; then
+          curl \
+            https://raw.githubusercontent.com/pypa/pipenv/master/get-pipenv.py \
+            | python
+        fi
         pip install --upgrade --no-cache-dir \
-          wheel pip pytest pipenv coverage
-        echo "::endgroup::"
+          wheel pip pytest coverage
+        # echo "::endgroup::"
     - name: Run pre_test.sh
       shell: bash
       run: |
@@ -60,20 +73,36 @@ runs:
 
     - name: Install Application Python Packages
       shell: bash
+      env:
+        PYTHON_PACKAGER: ${{ steps.packager.outputs.packager }}
       run: |
-        echo "::group::Install Python Packages"
-        if [ -f "requirements.txt" ]; then
+        # echo "::group::Install Python Packages"
+        if [ "$PYTHON_PACKAGER" == "pipenv" ]; then
+            mkdir -p ./.venv
+            pipenv sync --dev
+        fi
+        if [ "$PYTHON_PACKAGER" == "pip" ]; then
             pip install -r requirements.txt
         fi
-        if [ -f "Pipfile" ]; then
-            pipenv sync --dev --system
+        if [ "$PYTHON_PACKAGER" == "poetry" ]; then
+            poetry install --all-groups
         fi
-        echo "::endgroup::"
+        # echo "::endgroup::"
+
     - name: Test with pytest
       shell: bash
+      env:
+        PYTHON_PACKAGER: ${{ steps.packager.outputs.packager }}
       run: |
+        runner=""
+        if [ "$PYTHON_PACKAGER" == "poetry" ]; then
+            runner="poetry run "
+        fi
+        if [ "$PYTHON_PACKAGER" == "pipenv" ]; then
+            runner="pipenv run "
+        fi
         echo "::group::Test with pytest"
-        coverage run -m pytest
+        eval "${runner}coverage run -m pytest"
         echo "::endgroup::"
 
     - name: Collect Coverage Results
