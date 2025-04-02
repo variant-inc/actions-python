@@ -32,16 +32,13 @@ runs:
       shell: bash
       run: |
         echo "packager=pip" >> $GITHUB_OUTPUT
-        echo "lockfile=requirements.txt" >> $GITHUB_OUTPUT
         if [ -f "Pipfile.lock" ]; then
             echo "PIPENV_VENV_IN_PROJECT=1" >> $GITHUB_ENV
             echo "packager=pipenv" >> $GITHUB_OUTPUT
-            echo "lockfile=Pipfile.lock" >> $GITHUB_OUTPUT
         fi
         if [ -f "poetry.lock" ]; then
             pipx install poetry
             echo "packager=poetry" >> $GITHUB_OUTPUT
-            echo "lockfile=poetry.lock" >> $GITHUB_OUTPUT
         fi
 
     - name: Set up Python
