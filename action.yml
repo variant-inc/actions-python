@@ -71,7 +71,7 @@ runs:
 
     - name: Sonar Setup
       id: sonar-setup
-      uses: variant-inc/actions-collection/sonar-setup@renovate/all-minor-patch
+      uses: variant-inc/actions-collection/sonar-setup@renovate/aws-actions-configure-aws-credentials-5.x
 
     - shell: bash
       run: |
@@ -87,11 +87,11 @@ runs:
 
     - name: Sonar Coverage Check
       id: sonar-coverage-check
-      uses: variant-inc/actions-collection/sonar-coverage-check@renovate/all-minor-patch
+      uses: variant-inc/actions-collection/sonar-coverage-check@renovate/aws-actions-configure-aws-credentials-5.x
       if: ${{ steps.sonar-setup.outputs.wait_flag == 'true' }}
 
     - name: Build and Push Image
-      uses: variant-inc/actions-collection/build-push-image@renovate/all-minor-patch
+      uses: variant-inc/actions-collection/build-push-image@renovate/aws-actions-configure-aws-credentials-5.x
       if: ${{ inputs.ecr_repository != '' }}
       with:
         dockerfile_dir_path: ${{ inputs.dockerfile_dir_path }}
