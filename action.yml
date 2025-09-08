@@ -92,7 +92,7 @@ runs:
 
     - name: Build and Push Image
       uses: variant-inc/actions-collection/build-push-image@v2
-`      if: ${{ inputs.ecr_repository != '' }}
+      if: ${{ inputs.ecr_repository != '' }}
       with:
         dockerfile_dir_path: ${{ inputs.dockerfile_dir_path }}
         ecr_repository: ${{ inputs.ecr_repository }}
