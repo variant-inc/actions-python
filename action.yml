@@ -21,7 +21,7 @@ description: |
         uses: variant-inc/actions-python@v2
         with:
           ecr_repository: 'demo/example'
-          python-version: 3.10
+          python-version: '3.10'
   ```
 
   ## Locating Container Images
