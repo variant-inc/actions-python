@@ -110,7 +110,7 @@ runs:
       run: |
         echo "::group::Collect Coverage Results"
         coverage xml -i -o coverage.xml
-        coverage html -i -o coverage.html
+        coverage html -i -d coverage-html
         echo "::endgroup::"
 
     - name: SonarCloud Scan
@@ -138,5 +138,7 @@ runs:
       uses: actions/upload-artifact@v4
       with:
         name: coverage-report
-        path: coverage.html
+        path: |
+          coverage-html/
+          coverage.xml
         retention-days: 30
