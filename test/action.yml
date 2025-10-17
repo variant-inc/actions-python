@@ -110,12 +110,35 @@ runs:
       run: |
         echo "::group::Collect Coverage Results"
         coverage xml -i -o coverage.xml
+        coverage html -i -d coverage-html
         echo "::endgroup::"
+
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master
+      if: env.ENABLE_SONAR == 'true'
       with:
         args: >
           -Dsonar.qualitygate.wait=${{ inputs.sonar_wait_flag }}
           -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
           -Dsonar.organization=${{ env.SONAR_ORG }}
           -Dsonar.python.coverage.reportPaths=coverage.xml
+
+    - name: Add Coverage to Summary
+      if: env.ENABLE_SONAR != 'true'
+      shell: bash
+      run: |
+        echo "## 📊 Test Results Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        coverage report >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+
+    - name: Upload HTML Coverage Report
+      if: env.ENABLE_SONAR != 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: |
+          coverage-html/
+          coverage.xml
+        retention-days: 30
