@@ -135,7 +135,7 @@ runs:
 
     - name: Upload HTML Coverage Report
       if: env.ENABLE_SONAR != 'true'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: coverage-report
         path: |
