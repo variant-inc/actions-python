@@ -71,7 +71,7 @@ runs:
 
     - name: Sonar Setup
       id: sonar-setup
-      uses: variant-inc/actions-collection/sonar-setup@v2
+      uses: variant-inc/actions-collection/sonar-setup@fix/remove-cache-if-trivy-ignored
       if: env.ENABLE_SONAR == 'true'
 
     - shell: bash
@@ -88,11 +88,11 @@ runs:
 
     - name: Sonar Coverage Check
       id: sonar-coverage-check
-      uses: variant-inc/actions-collection/sonar-coverage-check@v2
+      uses: variant-inc/actions-collection/sonar-coverage-check@fix/remove-cache-if-trivy-ignored
       if: steps.sonar-setup.outputs.wait_flag == 'true' && env.ENABLE_SONAR == 'true'
 
     - name: Build and Push Image
-      uses: variant-inc/actions-collection/build-push-image@v2
+      uses: variant-inc/actions-collection/build-push-image@fix/remove-cache-if-trivy-ignored
       if: ${{ inputs.ecr_repository != '' }}
       with:
         dockerfile_dir_path: ${{ inputs.dockerfile_dir_path }}
