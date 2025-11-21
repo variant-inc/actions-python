@@ -67,11 +67,11 @@ runs:
   using: composite
   steps:
     - name: Setup Actions
-      uses: variant-inc/actions-setup@v2
+      uses: variant-inc/actions-setup@renovate/actions-checkout-6.x
 
     - name: Sonar Setup
       id: sonar-setup
-      uses: variant-inc/actions-collection/sonar-setup@v2
+      uses: variant-inc/actions-collection/sonar-setup@renovate/actions-checkout-6.x
       if: env.ENABLE_SONAR == 'true'
 
     - shell: bash
@@ -88,11 +88,11 @@ runs:
 
     - name: Sonar Coverage Check
       id: sonar-coverage-check
-      uses: variant-inc/actions-collection/sonar-coverage-check@v2
+      uses: variant-inc/actions-collection/sonar-coverage-check@renovate/actions-checkout-6.x
       if: steps.sonar-setup.outputs.wait_flag == 'true' && env.ENABLE_SONAR == 'true'
 
     - name: Build and Push Image
-      uses: variant-inc/actions-collection/build-push-image@v2
+      uses: variant-inc/actions-collection/build-push-image@renovate/actions-checkout-6.x
       if: ${{ inputs.ecr_repository != '' }}
       with:
         dockerfile_dir_path: ${{ inputs.dockerfile_dir_path }}
